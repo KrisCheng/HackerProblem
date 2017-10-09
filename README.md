@@ -18,9 +18,7 @@ Desc:
 
 Desc:
 
-* 周志华《机器学习》1.2，使用C++模拟实现(原题如下)；
-
-![problem](C++/1_DisjunctiveNF/problem.png)
+* 周志华《机器学习》1.2，使用C++模拟实现(原题 [周志华《机器学习》课后习题解答系列（二](http://blog.csdn.net/snoopy_yuan/article/details/62054718))；
 
 
 ## JavaScript
