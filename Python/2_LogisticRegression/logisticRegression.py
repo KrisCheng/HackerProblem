@@ -66,7 +66,7 @@ def propagate(w, b, X, Y):
     # cost funtion
     cost = 0
     for i in range(len(A)):
-        cost += np.log(A[i][0]) * Y[i][0] + np.log(1 - A[i][0]) * (1 - Y[i][0])
+        cost -= np.log(A[i][0]) * Y[i][0] + np.log(1 - A[i][0]) * (1 - Y[i][0])
 
     # update the parameters
     dw = (1 / m) * np.dot(X.T, (A - Y))
@@ -78,6 +78,7 @@ def propagate(w, b, X, Y):
 
 def optimize(w, b, X, Y, num_iter, learning_rate):
     costs = []
+    axis = []
     for i in range(num_iter):
         grads, cost = propagate(w, b, X, Y)
         dw = grads["dw"]
@@ -89,7 +90,15 @@ def optimize(w, b, X, Y, num_iter, learning_rate):
         if i % 1000 == 0:
             # Print the cost every 100 training examples
             costs.append(cost)
+            axis.append(i)
             print("Cost after iteration {0}: {1}".format(i, cost))
+
+    plt.plot(axis, costs, linewidth=1.5, linestyle="-", label="cost")
+    plt.xlabel('epochs')
+    plt.ylabel('gradient')
+
+    plt.show()
+
     params = {"w": w,
               "b": b}
 
@@ -106,7 +115,7 @@ def predict(w, b, X):
 
     for i in range(A.shape[0]):
         # you can set the threshold here
-        if A[i][0] > 0.1:
+        if A[i][0] > 0.15:
             Y_prediction[i] = 1
         else:
             Y_prediction[i] = 0
@@ -136,4 +145,6 @@ def model(X_train, Y_train, X_test, Y_test, num_iter, learning_rate):
     return d
 
 # you can update the epochs and learning rate as you wish
+
 d = model(trainingXList, trainingYList, testingXList, testingYList, 20000, 0.001)
+
