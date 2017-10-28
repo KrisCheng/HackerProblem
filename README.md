@@ -12,7 +12,11 @@ Desc:
 
 * 三扇门后有一个有大奖，其他两个没有奖，假定你选中了其中一个，这时候有人打开了其中一扇，发现没有奖，这时候你要不要换选另一扇没开的门呢？
 
+#### 2.Logistic Regression
 
+Desc:
+
+* the first assignment of the course of Pattern Recognization [Page Link](http://sse.tongji.edu.cn/yingshen/course/PR2017Fall/assignments/assignment1.pdf)
 
 
 ## C++
