@@ -12,8 +12,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # load the dataset
-trainingtUrl = "training.txt"
-testingUrl = "testing.txt"
+trainingtUrl = "dataset/Sonar/training.txt"
+testingUrl = "dataset/Sonar/testing.txt"
 trainingData = open(trainingtUrl, 'r')
 testingData = open(testingUrl, 'r')
 
@@ -105,7 +105,8 @@ def predict(w, b, X):
     A = sigmoid(np.dot(X, w) + b)
 
     for i in range(A.shape[0]):
-        if A[i][0] > 0.5:
+        # you can set the threshold here
+        if A[i][0] > 0.1:
             Y_prediction[i] = 1
         else:
             Y_prediction[i] = 0

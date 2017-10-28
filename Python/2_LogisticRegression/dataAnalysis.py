@@ -18,7 +18,7 @@ if os.path.isfile('dataAnalysis.txt'):
 f = open('dataAnalysis.txt', 'w')
 
 #set the target repository
-targetUrl = "dataset.txt"
+targetUrl = "dataset/Sonar/dataset.txt"
 data = open(targetUrl, 'r')
 
 xList = []
