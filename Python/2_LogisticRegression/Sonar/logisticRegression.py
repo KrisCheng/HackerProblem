@@ -12,8 +12,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # load the dataset
-trainingtUrl = "dataset/Sonar/training.txt"
-testingUrl = "dataset/Sonar/testing.txt"
+trainingtUrl = "dataset/training.txt"
+testingUrl = "dataset/testing.txt"
 trainingData = open(trainingtUrl, 'r')
 testingData = open(testingUrl, 'r')
 

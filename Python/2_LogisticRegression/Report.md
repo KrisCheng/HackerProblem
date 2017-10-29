@@ -8,14 +8,14 @@ Email: tjupengcheng@163.com
 
 ## 1.Overview
 
-This report will introduce 2 datasets, the [Sonar](http://archive.ics.uci.edu/ml/datasets/Connectionist+Bench+%28Sonar%2C+Mines+vs.+Rocks%29) dataset and the []() dataset, all come from UCI Machine Learning Repository. the report was divided into 2 parts, in each part, the detailed information of the dataset will be given respectively, including the main characteristics、data preprocessing operation、design of the classification model、the result and interpretation of the result, and the limitation and summary of the program.
+This report will introduce 2 datasets, the [Sonar](http://archive.ics.uci.edu/ml/datasets/Connectionist+Bench+%28Sonar%2C+Mines+vs.+Rocks%29) dataset and the [Abalone](http://archive.ics.uci.edu/ml/datasets/Abalone) dataset, all come from UCI Machine Learning Repository. the report was divided into 2 parts, in each part, the detailed information of the dataset will be given respectively, including the main characteristics、data preprocessing operation、design of the classification model、the result and interpretation of the result, and the limitation and summary of the program.
 
 
 ## 2.Sonar
 
 ### 2.1 Main Characteristics
 
-if you run
+change cd to /Sonar, run
 
 	python dataAnalysis.py
 
@@ -51,9 +51,11 @@ you will run the logistic regression model and get the result(you can also tune 
 ### 2.4 Result and Reason
 
 Using Gradient Descent and set the epoches = 20000, the result showed below:
+
 ![](img/Figure_1.png)
 
 and the accuracy showed below:
+
 ![](img/Figure_2.png)
 
 we can see the result is not so exciting, mabye the parameter is not well tuned.
@@ -65,4 +67,21 @@ There are two main limitations in this program:
 * Using a single logistic regression layer to build a model is sometimes so weak, maybe use a multi-layer neural network can get a better result;
 
 * the dataset is little big small, let's try a bigger one. 
+
+
+## 3.Abalone
+
+### 3.1 Main Characteristics
+
+
+### 3.2 Data Preprocessing Operation
+
+
+### 3.3 Model
+
+
+### 3.4 Result and Reason
+
+
+### 3.5 Limitation and Improvement
 
