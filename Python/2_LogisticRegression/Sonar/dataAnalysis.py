@@ -11,6 +11,9 @@ Copyright (c) 2017 - Kris Peng <kris.dacpc@gmail.com>
 
 import os
 import numpy as np
+import pandas as pd
+from pandas import DataFrame
+import matplotlib.pyplot as plot
 
 # create a file to record the data analysis result
 if os.path.isfile('dataAnalysis.txt'):
@@ -18,8 +21,8 @@ if os.path.isfile('dataAnalysis.txt'):
 f = open('dataAnalysis.txt', 'w')
 
 #set the target repository
-targetUrl = "dataset/dataset.txt"
-data = open(targetUrl, 'r')
+targetPath = "dataset/dataset.txt"
+data = open(targetPath, 'r')
 
 xList = []
 yList = []
@@ -88,6 +91,24 @@ for row in xList:
 f.write("The Type and Number of Labels in the Dataset:" + '\n')
 for i in countNumber:
     f.write("{0} = {1}".format(i, countNumber[i]) + '\n')
+
+# 4.plot the distrubution of the dataset
+dataDistribute = pd.read_csv(targetPath, header = None, prefix = "A")
+
+plot.xlabel("Attribute Number")
+plot.ylabel("Value")
+new_ticks = np.linspace(0, 60, 5)
+plot.xticks(new_ticks)
+
+for i in range(207):
+    if dataDistribute.iat[i, 60] is 'M':
+        pcolor = 'red'
+    else:
+        pcolor = 'black'
+    dataRow = dataDistribute.iloc[i, 0:60]
+    dataRow.plot(color = pcolor, alpha = 0.4, linewidth = 0.7)
+
+plot.show()
 
 f.close()
 data.close()

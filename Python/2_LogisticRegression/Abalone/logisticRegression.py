@@ -13,10 +13,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # load the dataset
-trainingtUrl = "dataset/training.txt"
-testingUrl = "dataset/testing.txt"
-trainingData = open(trainingtUrl, 'r')
-testingData = open(testingUrl, 'r')
+trainingtPath = "dataset/training.txt"
+testingPath = "dataset/testing.txt"
+trainingData = open(trainingtPath, 'r')
+testingData = open(testingPath, 'r')
 
 trainingXList = []
 trainingYList = []
@@ -25,18 +25,18 @@ testingXList = []
 testingYList = []
 
 for line in trainingData:
-    row = str(line).strip().split(";")
-    trainingXList.append(row[0:len(row) - 1])
-
-    if row[-1] is 'M':
+    row = str(line).strip().split(",")
+    trainingXList.append(row[1:len(row)])
+    # 1 for male 0 for female
+    if row[0] is 'M':
         trainingYList.append(1)
     else:
         trainingYList.append(0)
 
 for line in testingData:
-    row = str(line).strip().split(";")
-    testingXList.append(row[0:len(row) - 1])
-    if row[-1] is 'M':
+    row = str(line).strip().split(",")
+    testingXList.append(row[1:len(row)])
+    if row[0] is 'M':
         testingYList.append(1)
     else:
         testingYList.append(0)
@@ -88,7 +88,7 @@ def optimize(w, b, X, Y, num_iter, learning_rate):
         w = w - learning_rate * dw
         b = b - learning_rate * db
 
-        if i % 1000 == 0:
+        if i % 5 == 0:
             # Print the cost every 100 training examples
             costs.append(cost)
             axis.append(i)
@@ -116,7 +116,7 @@ def predict(w, b, X):
 
     for i in range(A.shape[0]):
         # you can set the threshold here
-        if A[i][0] > 0.15:
+        if A[i][0] > 0.5:
             Y_prediction[i] = 1
         else:
             Y_prediction[i] = 0
@@ -146,6 +146,5 @@ def model(X_train, Y_train, X_test, Y_test, num_iter, learning_rate):
     return d
 
 # you can update the epochs and learning rate as you wish
-
-d = model(trainingXList, trainingYList, testingXList, testingYList, 20000, 0.001)
+d = model(trainingXList, trainingYList, testingXList, testingYList, 40, 0.06)
 

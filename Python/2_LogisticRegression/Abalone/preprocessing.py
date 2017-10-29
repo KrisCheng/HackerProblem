@@ -28,12 +28,7 @@ data = open(targetUrl, 'r')
 
 for line in data:
     row = str(line).strip().split(",")
-    if row[0] is 'M':
-        if random.randint(0, 9) < 8:
-            train.write(",".join(row) + '\n')
-        else:
-            test.write(",".join(row) + '\n')
-    elif row[0] is 'F':
+    if row[0] is 'M' or row[0] is 'F':
         if random.randint(0, 9) < 8:
             train.write(",".join(row) + '\n')
         else:

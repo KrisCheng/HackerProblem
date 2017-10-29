@@ -12,10 +12,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # load the dataset
-trainingtUrl = "dataset/training.txt"
-testingUrl = "dataset/testing.txt"
-trainingData = open(trainingtUrl, 'r')
-testingData = open(testingUrl, 'r')
+trainingPath = "dataset/training.txt"
+testingPath = "dataset/testing.txt"
+trainingData = open(trainingPath, 'r')
+testingData = open(testingPath, 'r')
 
 trainingXList = []
 trainingYList = []
@@ -94,7 +94,7 @@ def optimize(w, b, X, Y, num_iter, learning_rate):
             print("Cost after iteration {0}: {1}".format(i, cost))
 
     plt.plot(axis, costs, linewidth=1.5, linestyle="-", label="cost")
-    plt.xlabel('epochs')
+    plt.xlabel('epoch')
     plt.ylabel('gradient')
 
     plt.show()
@@ -115,7 +115,7 @@ def predict(w, b, X):
 
     for i in range(A.shape[0]):
         # you can set the threshold here
-        if A[i][0] > 0.15:
+        if A[i][0] > 0.5:
             Y_prediction[i] = 1
         else:
             Y_prediction[i] = 0
