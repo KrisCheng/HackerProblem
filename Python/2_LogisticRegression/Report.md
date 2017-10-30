@@ -1,7 +1,7 @@
 <style>
 img {
-    width: 80%;
-    padding-left: 10%;
+    width: 60%;
+    padding-left: 20%;
 }
 </style>
 
@@ -155,7 +155,7 @@ from the "No Free Lunch Theorem", no matter what elegent-designed algorithm we t
 
 Most of my inspiration comes from the sildes in the course, and the model comes from the [Deeplearning.ai](https://www.deeplearning.ai/) course by Andrew Ng.
 
-By the way, there is another good dataset to build a classifier of cats and I have get a great result, but unfortunately the dataset is not opened, if you have interest, you can see my idea in the below blogs:
+By the way, there is another good dataset to build a classifier of cats and I have get a great result, but unfortunately the dataset is not opened yet, so I just can access it on Coursera, if you have interest, you can see my idea in the 3 blogs as follow:
 
 * [Logistic回归实现猫分类器](http://pengcheng.tech/2017/09/17/logistic-regression%E5%AE%9E%E7%8E%B0%E7%8C%AB%E5%88%86%E7%B1%BB%E5%99%A8/)
 
@@ -163,4 +163,4 @@ By the way, there is another good dataset to build a classifier of cats and I ha
 
 * [神经网络实现猫分类器](http://pengcheng.tech/2017/09/24/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%AE%9E%E7%8E%B0%E7%8C%AB%E5%88%86%E7%B1%BB%E5%99%A8/)
 
-Thank you for you time.
+Thank you for your time.
