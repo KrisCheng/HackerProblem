@@ -18,7 +18,8 @@ Here is the structure of this project:
 			testing.txt -- the testing dataset, 20%(randomly) of the whole dataset.
 			training.txt -- the training dataset, 80%(randomly) of the whole dataset.
 	
-	Abalone -- the second project, Abalone.		dataAnalysis.py -- the dataAnalysis program, will generate a .txt file.
+	Abalone -- the second project, Abalone.
+		dataAnalysis.py -- the dataAnalysis program, will generate a .txt file.
 		logisticRegression.py -- the main program, will build a model and show the result.
 		preprocessing.py -- the preprocessing program, will gererate a training dataset and a testing dataset.
 		dataset -- the row dataset

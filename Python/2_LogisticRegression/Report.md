@@ -144,18 +144,18 @@ and the accuracy showed below:
 
 ![](img/abaloneResult.png)
 
-the result is not so delighted, we tried many parameters for a better model, but seems the 8 attributes have little relation with the sex of abalone.
+the result is not so delighted, I tried many parameters for a better model, but seems the 8 attributes have little relation with the sex of abalone.
 
 ### 3.5 Limitation and Improvement
 
-from the "No Free Lunch Theorem", no matter what elegent-designed algorithm we take, if there exists little or even no relation between the datas, the result cannot be train as good as those data with strong relations, so this dataset is not so suitable for the classification of sex for abalone.
+from the "No Free Lunch Theorem", we can use learning algorithms when the inner connection behind the datas must be satisfied, it's meanless to build a model while the datas exists litter or no relations(not all the problems can be solved by machine learning). no matter what elegent-designed algorithm we take, if there exists little or even no relation between the datas, the result cannot be train as good as those data with strong relations in theory, so this dataset is not so suitable for the classification of sex for abalone.
 
 
 ## 4.Reference
 
-Most of my inspiration comes from the sildes in the course, and the model comes from the [Deeplearning.ai](https://www.deeplearning.ai/) course by Andrew Ng.
+Most of my inspiration comes from the sildes in the class, and the model comes from the [Deeplearning.ai](https://www.deeplearning.ai/) course by Andrew Ng.
 
-By the way, there is another good dataset to build a classifier of cats and I have get a great result, but unfortunately the dataset is not opened yet, so I just can access it on Coursera, if you have interest, you can see my idea in the 3 blogs as follow:
+By the way, there is another good dataset to build a classifier of cats and I have get a great result(the accuracy more than 80%), but unfortunately the dataset is not opened yet, so I just can access it on Coursera, if you have interest, you can see the idea in  3 of my blogs as follow(step by step):
 
 * [Logistic回归实现猫分类器](http://pengcheng.tech/2017/09/17/logistic-regression%E5%AE%9E%E7%8E%B0%E7%8C%AB%E5%88%86%E7%B1%BB%E5%99%A8/)
 
