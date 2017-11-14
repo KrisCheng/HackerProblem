@@ -1,16 +1,16 @@
 # HackerApplication
 
-这个repository是我平时个人的学习笔记和代码，主要用于记录各种遇到的实际编程问题（类似于解题集），主要为训练个人的数据结构和算法思维，同时也记录实际碰到的代码问题，踩一坑填一坑。
+This repository is used to record the coding problems I meet in my daily work and life. 
 
-注：文件夹根据编程语言分类，编号根据时间顺序排序。
+*Notes:* Divided by programming language, and sorted by timeline.
 
 ## Python
 
-#### 1.概率问题
+#### 1.Probability Problem
 
 Desc:
 
-* 三扇门后有一个有大奖，其他两个没有奖，假定你选中了其中一个，这时候有人打开了其中一扇，发现没有奖，这时候你要不要换选另一扇没开的门呢？
+* One of the three doors has a prize, while others has not, if you select one of them, someone opened one of the other two doors and found no prize, this time you want to change to another unopend door?
 
 #### 2.Logistic Regression
 
@@ -18,14 +18,19 @@ Desc:
 
 * the first assignment of the course of Pattern Recognization [Page Link](http://sse.tongji.edu.cn/yingshen/course/PR2017Fall/assignments/assignment1.pdf)
 
-
-## C++
-
-#### 1.析合范式
+#### 3.Cup Detection
 
 Desc:
 
-* 周志华《机器学习》1.2，使用C++模拟实现(原题 [周志华《机器学习》课后习题解答系列（二](http://blog.csdn.net/snoopy_yuan/article/details/62054718))；
+* the second assignment of the course of Pattern Recognization [Page Link](http://sse.tongji.edu.cn/yingshen/course/PR2017Fall/assignments/assignment2.pdf)
+
+## C++
+
+#### 1.Conjunctive Normal Form (析合范式) Problem
+
+Desc:
+
+* 《机器学习》by Zhihua Zhou 1.2, implemented by C++ (Source: [周志华《机器学习》课后习题解答系列（二](http://blog.csdn.net/snoopy_yuan/article/details/62054718))
 
 
 ## JavaScript
@@ -34,5 +39,5 @@ Desc:
 
 Desc：
 
-* 基于Web，构建一个Todolist，仅仅使用jquery，无其他框架；
-* 实现任务的增删改查和缓存；
+* Based on Web,build Todolist, just used jquery and no other frameworks;
+* Implement the CURD and buffer memory.
