@@ -2,7 +2,7 @@
 
 This repository is used to record the coding problems I meet in my daily work and life. 
 
-*Notes:* Divided by programming language, and sorted by timeline.
+*Notes:* Classified by programming language, and sorted by timeline.
 
 ## Python
 
