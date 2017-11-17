@@ -30,7 +30,7 @@ Desc:
 
 Desc:
 
-* 《机器学习》by Zhihua Zhou 1.2, implemented by C++ (Source: [周志华《机器学习》课后习题解答系列（二](http://blog.csdn.net/snoopy_yuan/article/details/62054718))
+* 《机器学习》by Zhi-Hua Zhou 1.2, implemented by C++ (Source: [周志华《机器学习》课后习题解答系列（二](http://blog.csdn.net/snoopy_yuan/article/details/62054718))
 
 
 ## JavaScript
