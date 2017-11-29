@@ -24,6 +24,8 @@ Desc:
 
 * the second assignment of the course of Pattern Recognization [Page Link](http://sse.tongji.edu.cn/yingshen/course/PR2017Fall/assignments/assignment2.pdf)
 
+ Reference Solution: [YOLOv2训练自己的数据集（VOC格式）](http://blog.csdn.net/ch_liu23/article/details/53558549)
+
 ## C++
 
 #### 1.Conjunctive Normal Form (析合范式) Problem
