@@ -10,7 +10,7 @@ Copyright (c) 2017 - Kris Peng <kris.dacpc@gmail.com>
 import random
 import time
 
-def Exchange(num):
+def Exchange(num, maxChannel):
     matrix = []
     for i in range(num): 
         matrix.append([]) 
@@ -20,8 +20,6 @@ def Exchange(num):
         matrix[i][i] = 1
     # print(matrix)
 
-    currentCount = 10000
-    bestCount = 10000
     changeList = []
     for i in range(num):
         changeList.append(i) 
@@ -30,7 +28,7 @@ def Exchange(num):
         random.shuffle(changeList)
         count = count + 1
         # 根据排序两两配对
-        for i in range(int(num/2)):
+        for i in range(min(int(num/2),maxChannel)):
             tempList = []
             for j in range(num):
                 if(matrix[changeList[i]][j] == 1 or matrix[changeList[i+int(len(changeList)/2)]][j] == 1):
@@ -49,10 +47,11 @@ def Exchange(num):
             if(matrix[i].count(1) != num):
                 isFinal = False
         if(isFinal == False):
-            print("Current Num of iteration: %x" % count)
+            print("Current Num of iteration: %d" % count)
             continue
-        print("Final Num of iteration: %x" % count)
+        print("Final Num of iteration: %d" % count)
         break
 
-Exchange(9)
+# for i in range(1000):
+Exchange(9,2)
 
