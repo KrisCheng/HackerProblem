@@ -53,5 +53,9 @@ def Exchange(num, maxChannel):
         break
 
 # for i in range(1000):
-Exchange(9,2)
+print('请输入通信班数目: ')
+num = input()
+print('请输入最大加密信道数目: ')
+maxChannel = input()
+Exchange(int(num), int(maxChannel))
 
