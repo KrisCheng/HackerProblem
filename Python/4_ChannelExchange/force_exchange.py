@@ -37,25 +37,30 @@ def Exchange(num, maxChannel):
                     tempList.append(0)
             matrix[changeList[i]] = tempList
             matrix[changeList[i+int(len(changeList)/2)]] = tempList
-            print("Change Log: %x , %x" % (changeList[i], changeList[i+int(len(changeList)/2)]) )
+            # print("Change Log: %x , %x" % (changeList[i], changeList[i+int(len(changeList)/2)]) )
 
         # 判断是否满足终止条件
         isFinal = True
-        print("Currten Stage:")
+        # print("Currten Stage:")
         for i in range(num):
-            print(matrix[i])
+            # print(matrix[i])
             if(matrix[i].count(1) != num):
                 isFinal = False
         if(isFinal == False):
-            print("Current Num of iteration: %d" % count)
+            # print("Current Num of iteration: %d" % count)
             continue
-        print("Final Num of iteration: %d" % count)
+        # print("Final Num of iteration: %d" % count)
+        return count
         break
 
-# for i in range(1000):
 print('请输入通信班数目: ')
 num = input()
 print('请输入最大加密信道数目: ')
 maxChannel = input()
-Exchange(int(num), int(maxChannel))
 
+# Exchange(int(7), int(3))
+temp = []
+for i in range(50000):
+    temp.append(Exchange(int(num), int(maxChannel)))
+
+print("最少交换次数: %d" % min(temp))
