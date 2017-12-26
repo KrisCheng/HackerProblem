@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 from matplotlib import style
-style.use("ggplot")
 import numpy as np
 from sklearn import preprocessing, cross_decomposition
 import pandas as pd
@@ -30,6 +29,7 @@ class K_Means:
     def fit(self, data):
 
         self.centroids = {}
+        
         for i in range(self.k):
             self.centroids[i] = data[i]
 
@@ -92,7 +92,7 @@ class K_Means:
 
 df = pd.read_excel('titanic/dataset/titanic.xls')
 df.drop(['body', 'name'], 1, inplace = True)
-print(df.head())
+# print(df.head())
 df.fillna(0, inplace = True)
 
 def handle_non_numerical_data(df):
@@ -119,17 +119,18 @@ def handle_non_numerical_data(df):
     return df
 
 df = handle_non_numerical_data(df)
-print(df.head())
+# print(df.head())
 
 df.drop(['ticket', 'home.dest'], 1, inplace = True)
-
+# print(df)
 X = np.array(df.drop(['survived'], 1).astype(float))
+print(X[0])
+print(X[1])
 X = preprocessing.scale(X)
+# print(X)
 y = np.array(df['survived'])
-
 clf = K_Means()
 clf.fit(X)
-
 correct = 0
 for i in range(len(X)):
     
@@ -138,5 +139,6 @@ for i in range(len(X)):
     prediction = clf.predict(predict_me)
     if prediction == y[i]:
         correct += 1
-
+print(len(clf.classifications[0]))
+print(len(clf.classifications[1]))
 print(correct/len(X))
