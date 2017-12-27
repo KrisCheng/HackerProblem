@@ -55,7 +55,7 @@ Desc:
 
 Desc:
 
-* The final assignment of the Distrubuted System Class.
+* The final assignment of the Distrubuted System Class. [Page Link](https://github.com/KrisCheng/HackerProblem/blob/master/Java/1_MobileData/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%A1%E7%AE%97%E8%AF%BE%E7%A8%8B%E9%A1%B9%E7%9B%AE.pdf)
 
 ## JavaScript
 

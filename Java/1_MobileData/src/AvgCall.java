@@ -5,21 +5,15 @@ import java.util.Map;
 
 public class AvgCall {
     public static void main(String[] args) {
-
         //<主叫号码,有通话记录的天数>
         HashMap<String, Integer> dayCount = new HashMap<String, Integer>();
-
         //<主叫号码,所有通话次数>
         HashMap<String, Integer> allCount = new HashMap<String, Integer>();
-
         //<主叫号码,通话日期>
         HashMap<String, ArrayList<String>> teleDate = new HashMap<String, ArrayList<String>>();
-
         //<主叫号码,每日平均通话次数>
         HashMap<String, Double> avgCount = new HashMap<String, Double>();
-
         String FilePath = "dataset/tb_call_201202_random.txt";
-
         try {
             // read file content from file
             StringBuffer sb= new StringBuffer("");
@@ -52,7 +46,6 @@ public class AvgCall {
                     tempList.add(dictionary[0]);
                     teleDate.put(dictionary[1], tempList);
                 }
-
                 if(allCount.containsKey(dictionary[1])) {
                     // 为重复key值value加一
                     int temp = allCount.get(dictionary[1])+1;
@@ -67,14 +60,12 @@ public class AvgCall {
             for(Map.Entry<String, ArrayList<String>> entry : teleDate.entrySet()) {
                 dayCount.put(entry.getKey(),entry.getValue().size());
             }
-
             // 计算日平均通话次数
             for(Map.Entry<String, Integer> entry : allCount.entrySet()) {
                 if(dayCount.containsKey(entry.getKey())){
                     avgCount.put(entry.getKey(), (((double)entry.getValue()/dayCount.get(entry.getKey()))));
                 }
             }
-
             // 结果写入Txt文件
             File writename = new File("avg_call.txt");
             writename.createNewFile();
@@ -84,7 +75,6 @@ public class AvgCall {
             }
             out.flush();
             out.close();
-
         }
         catch(FileNotFoundException e) {
             e.printStackTrace();
