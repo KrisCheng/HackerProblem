@@ -49,6 +49,13 @@ Desc:
 
 	Reference: [周志华《机器学习》课后习题解答系列（二)](http://blog.csdn.net/snoopy_yuan/article/details/62054718)
 
+## Java
+
+#### 1.Mobile Data
+
+Desc:
+
+* The final assignment of the Distrubuted System Class.
 
 ## JavaScript
 

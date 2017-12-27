@@ -3,3 +3,9 @@
 /.iml
 Python/3_CupDetection/data/
 settings.json
+tb_call_201202_random.txt
+*.name
+*.iml
+*.class
+*.xml
+description.html
