@@ -10,12 +10,18 @@ Copyright (c) 2017 - Kris Peng <kris.dacpc@gmail.com>
 
 # use pandas just for file read
 import pandas as pd
-# use numpy just for square on list
+# use numpy just for fill those data that is NaN(not a number)
 import numpy as np
-# use random just for generate initial centroids
+# use random just for generate initial centroids randomly
 import random
-# use sklern just for Standardization
-from sklearn import preprocessing, cross_validation
+# use sklern just for Standardization, it's not necessary
+from sklearn import preprocessing
+
+def Get_Average(list):
+    sum = 0
+    for item in list:
+        sum += item
+    return sum / len(list)
 
 class K_means(object):
     
@@ -33,7 +39,7 @@ class K_means(object):
 
         for i in range(self.k):
             # choose the initial 2 centroids randomly
-            self.centroids[i] = data[i+400]
+            self.centroids[i] = data[i+random.randint(0,1000)]
         
         for i in range(self.max_iter):
             self.classifier = {}
@@ -42,8 +48,12 @@ class K_means(object):
                 self.classifier[j] = []
 
             for val in data:
-                distances = [np.linalg.norm(val - self.centroids[centroid]) for centroid in self.centroids]
-                # print(distances)
+                distances = []
+                for centroid in self.centroids:
+                    distance = 0
+                    for i in range(len(val)):
+                        distance += ((val[i] - self.centroids[centroid][i])**2)
+                    distances.append(distance)
                 classification = distances.index(min(distances))
                 self.classifier[classification].append(val)
 
@@ -51,24 +61,28 @@ class K_means(object):
 
             for classification in self.classifier:
                 self.centroids[classification] = np.average(self.classifier[classification],axis = 0)
-
             # if the centroids have get optimal
             optimized = True
 
             for i in self.centroids:
                 original_centroid = prev_centroids[i]
                 current_centroid = self.centroids[i]
-                if np.sum((current_centroid - original_centroid) / original_centroid) > self.critical:
-                    # not optimal
+                if sum((current_centroid - original_centroid)) > self.critical:
+                    # if not optimal
                     optimized = False
 
             if optimized or i is self.max_iter:
-                # print("Number of class one: %d" % len(self.classifier[0]))
-                # print("Number of class two: %d" % len(self.classifier[1]))
+                print("Number of class one: %d" % len(self.classifier[0]))
+                print("Number of class two: %d" % len(self.classifier[1]))
                 break
 
-    def classify(self, data):
-        distances = [np.linalg.norm(data - self.centroids[centroid]) for centroid in self.centroids]
+    def classify(self, predict):
+        distances = []
+        for centroid in self.centroids:
+            distance = 0
+            for i in range(len(predict)):
+                distance += ((predict[i] - self.centroids[centroid][i])**2)
+            distances.append(distance)
         classification = distances.index(min(distances))
         return classification
 
@@ -113,37 +127,25 @@ kmeans.cluster(data)
 correct = 0
 accuracy = []
 
-def Get_Average(list):
-    sum = 0
-    for item in list:
-        sum += item
-    return sum / len(list)
+for i in range(len(data)):
+    predict = data[i]
+    prediction = kmeans.classify(predict)
+    if prediction == y[i]:
+        correct += 1
+print("Accuracy without Standardization: %f %%" % (correct / len(data) * 100))
+accuracy.append((correct / len(data) * 100))
+correct = 0
 
-for k in range(100):
-    for i in range(len(data)):
-        predict = np.array(data[i].astype(float))
-        predict = predict.reshape(-1, len(predict))
-        prediction = kmeans.classify(predict)
-        if prediction == y[i]:
-            correct += 1
-        accuracy.append((correct / len(data) * 100))
-        # print("Accuracy: %f %%" % (correct / len(data) * 100))
-    correct = 0
-print("Average Accuracy without Standardization: %f %%" %Get_Average(accuracy))
-
+# below are the code for standardilization (just for compare)
 data = preprocessing.scale(data)
 kmeans.cluster(data)
 correct = 0
 accuracy = []
-for k in range(100):
-    for i in range(len(data)):
-        predict = np.array(data[i].astype(float))
-        predict = predict.reshape(-1, len(predict))
-        prediction = kmeans.classify(predict)
-        if prediction == y[i]:
-            correct += 1
-        accuracy.append((correct / len(data) * 100))
-        # print("Accuracy: %f %%" % (correct / len(data) * 100))
-    correct = 0
 
-print("Average Accuracy with Standardization: %f %%" %Get_Average(accuracy))
+for i in range(len(data)):
+    predict = data[i]
+    prediction = kmeans.classify(predict)
+    if prediction == y[i]:
+        correct += 1
+accuracy.append((correct / len(data) * 100))
+print("Accuracy with Standardization: %f %%" % (correct / len(data) * 100))

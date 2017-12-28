@@ -16,7 +16,9 @@ Email: tjupengcheng@163.com
 
 ## 1.Overview
 
-todo
+In this task, I used two dataset for clustering, the first one is the titanic dataset, which describe the information of individual passengers on the Titanic, the clustering task is to generate two cluster (survived or not) and compare with the ground-truth. The second dataset is the classical Iris dataset. I uesd K-means for those two dataset in this report, and I have tried other clustering methods for that, like Hierarchical clustering or Mean shift, but I failed to get reasonable result (maybe the dataset is not suitable).
+
+**Note: No Framework is used in this task, I have just used numpy for some list operation(add, subtract), as write for loops for that seems redundant.**
 
 ## 2.Titanic Dataset
 
@@ -76,11 +78,15 @@ The main design of the model including 3 parts:
 
 As the dataset is multi-dimensions, it's not intuitionistic to plot the whole result and compare with ground-truth. we get the accuracy by compare with the ground-truth. The screenshot as follow:
 
-<img src="img/titanic1.png"/>
+<img src="img/titanic3.png"/>
 
-as we just set the original centroids as the first two data of the raw dataset, so the result is relatively stable, but the accuracy is not that good.
+<center> Figure1: use the frist and second point as centroids</center>
 
-Compared with many initial centroids, we can conclude that the accuracy is highly related to the original centroid (sometimes can even to 80%), that may because we have not standardize the dataset, especially the translation from non-numerical data to numerical data is too ordinary.
+<img src="img/titanic4.png"/>
+
+<center> Figure2: use the 101 and 102 point as centroids</center>
+
+we can see that the clustering result is highly related to the choose of centroids. as this problem got not very intuitive standard, the choose of initial k has great impact to the final result.
 
 ### 2.5 Limitation and Improvement
 
@@ -90,26 +96,63 @@ The main limition of the dataset and improvement can be divided into two parts:
 
 * the Standardization of data, as the tranfer stage is not standardize, we can use mean removal and variance scaling to get a better result for that, and here is a simple comparision of accuracy for this (100 iterations, same initial centroids, and we use the preprocessing package which is integrated in scikit-learn):
 
-<img src="img/titanic2.png"/>
+<img src="img/titanic1.png"/>
+<center> Figure3: Standardization vs not Standardization </center>
 
-we can see that some other preprocessing step can imporve the result sometimes.
+we can see that some other preprocessing step can imporve the accuracy (not always).
 
-## 3.TODO
+## 3.Iris Dataset
 
 ### 3.1 Main Characteristics
+
+Iris is perhaps the best known dataset to be found in the pattern recognition literature. The dataset contains 3 classes of 50 instances each, where each class refers to a type of iris plant. One class is linearly separable from the other 2, the attribute information as follow:
+
+| Variable | Unit | Addition |
+| --- | --- | --- |
+| sepal length | cm |  |
+| sepal width | cm |  |
+| petal length | cm |  |
+| petal width | cm |  |
+| class |  |  Iris Setosa Iris / Versicolour / Virginica|
 
 
 ### 3.2 Data Preprocessing Operation
 
+For visualization and control variables, I used the sepal length/width and petal width to cluster respectively, and I transfered the 3 classes to 0,1,2 for convenient.
 
 ### 3.3 Model
 
+The main idea is K-means which mentioned above, just slightly difference on the variables control.
 
 ### 3.4 Result and Reason
 
+I have compared the different of using sepal and petal for clustering, here is the result:
+
+* Sepal
+
+<img src="img/petal.png"/>
+<center> Figure4: clustering of petal </center>
+
+<img src="img/petal_res.png"/>
+<center> Figure5: accuracy of petal </center>
+
+* Petal
+
+<img src="img/sepal.png"/>
+<center> Figure6: clustering of sepal </center>
+
+<img src="img/sepal_res.png"/>
+<center> Figure7: accuracy of sepal </center>
+
+As we used the same set of centroids and hyperparameters, we can see that the result of using petal is better than sepal, and if we used all the 4 attributes for clustering, the result is not static, mostly between the accuracy of sepal and petal, but the clustering result is stable with different centroids, that because the different between those 3 kinds of flowers is obvious, the machine can learn the result from those different data.
 
 ### 3.5 Limitation and Improvement
 
+the improvement can be divided into two parts:
+
+* K-means seems a very basic method for this dataset, Hierarchical clustering seems another option for that, or mean shift.
+
+* As the datset exists no noise data, tuning the parameter may get a better result. 
 
 ## 4.Reference
 
@@ -118,5 +161,7 @@ we can see that some other preprocessing step can imporve the result sometimes.
 * [Titanic: Machine Learning from Disaster (Kaggle Homepage)](https://www.kaggle.com/c/titanic/data) 
 
 * [Handling Non-Numerical Data for Machine Learning](https://pythonprogramming.net/working-with-non-numerical-data-machine-learning-tutorial/)
+
+* [Iris Plants Database](https://archive.ics.uci.edu/ml/datasets/iris)
 
 Thank you for your time.
