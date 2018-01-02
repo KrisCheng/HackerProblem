@@ -16,9 +16,9 @@ Email: tjupengcheng@163.com
 
 ## 1.Overview
 
-In this task, I used two dataset for clustering, the first one is the titanic dataset, which describe the information of individual passengers on the Titanic, the clustering task is to generate two cluster (survived or not) and compare with the ground-truth. The second dataset is the classical Iris dataset. I uesd K-means for those two dataset in this report, and I have tried other clustering methods for that, like Hierarchical clustering or Mean shift, but I failed to get reasonable result (maybe the dataset is not suitable).
+In this task, I used two datasets for clustering, the first one is the titanic dataset, which describes the information of individual passengers on the Titanic, the clustering task is to generate two clusters (survived or not) and compare with the ground-truth. The second dataset is the classical Iris dataset. I uesd K-means for those two dataset in this report. I have tried other clustering methods for that, like Hierarchical clustering or Mean shift, but I failed to get reasonable result (maybe the dataset is not suitable).
 
-**Note: No Framework is used in this task, I have just used numpy for some list operation(add, subtract), as write for loops for that seems redundant.**
+**Note: No Framework was used in this task, I have just used numpy for some list operation(add, subtract), as write for loops for that seems redundant.**
 
 ## 2.Titanic Dataset
 

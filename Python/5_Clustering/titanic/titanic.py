@@ -14,7 +14,7 @@ import pandas as pd
 import numpy as np
 # use random just for generate initial centroids randomly
 import random
-# use sklern just for Standardization, it's not necessary
+# use sklern just for Standalsrdization, it's not necessary
 from sklearn import preprocessing
 
 def Get_Average(list):
