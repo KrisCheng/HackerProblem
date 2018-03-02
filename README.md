@@ -39,6 +39,8 @@ Desc:
 * the third assignment of the course of Pattern Recognization [Page Link](http://sse.tongji.edu.cn/yingshen/course/PR2017Fall/assignments/assignment3.pdf)
 
 
+
+
 ## C++
 
 #### 1.Conjunctive Normal Form (析合范式) Problem
