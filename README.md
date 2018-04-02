@@ -16,13 +16,13 @@ Desc:
 
 Desc:
 
-* the first assignment of the course of Pattern Recognization [Page Link](http://sse.tongji.edu.cn/yingshen/course/PR2017Fall/assignments/assignment1.pdf)
+* the first assignment of the course of Pattern Recognization. [Page Link](http://sse.tongji.edu.cn/yingshen/course/PR2017Fall/assignments/assignment1.pdf)
 
 #### 3.Cup Detection
 
 Desc:
 
-* the second assignment of the course of Pattern Recognization [Page Link](http://sse.tongji.edu.cn/yingshen/course/PR2017Fall/assignments/assignment2.pdf)
+* the second assignment of the course of Pattern Recognization. [Page Link](http://sse.tongji.edu.cn/yingshen/course/PR2017Fall/assignments/assignment2.pdf)
 
 	Reference: [YOLOv2训练自己的数据集（VOC格式）](http://blog.csdn.net/ch_liu23/article/details/53558549)
 
@@ -36,9 +36,13 @@ Desc:
 
 Desc:
 
-* the third assignment of the course of Pattern Recognization [Page Link](http://sse.tongji.edu.cn/yingshen/course/PR2017Fall/assignments/assignment3.pdf)
+* the third assignment of the course of Pattern Recognization. [Page Link](http://sse.tongji.edu.cn/yingshen/course/PR2017Fall/assignments/assignment3.pdf)
 
+#### 6.Excel2DB
 
+Desc:
+
+* read data from excel, and save them to the datatbase.
 
 
 ## C++
@@ -47,7 +51,7 @@ Desc:
 
 Desc:
 
-* 《机器学习》by Zhi-Hua Zhou 1.2, implemented by C++ 
+* 《机器学习》by Zhi-Hua Zhou 1.2, implemented by C++.
 
 	Reference: [周志华《机器学习》课后习题解答系列（二)](http://blog.csdn.net/snoopy_yuan/article/details/62054718)
 
