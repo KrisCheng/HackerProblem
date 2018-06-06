@@ -45,6 +45,12 @@ Desc:
 * read data from excel, and save them to the datatbase.
 
 
+#### 7. DSL with Python
+
+Desc:
+
+* a Domain Specific Language demo with Python, based on PLY.
+
 ## C++
 
 #### 1.Conjunctive Normal Form (析合范式) Problem
