@@ -51,6 +51,12 @@ Desc:
 
 * a Domain Specific Language demo with Python, based on PLY.
 
+#### 8. PythonDBTutorial
+
+Desc:
+
+* the sample codes for database TA course. [Page Link]()
+
 ## C++
 
 #### 1.Conjunctive Normal Form (析合范式) Problem
