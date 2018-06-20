@@ -55,7 +55,7 @@ Desc:
 
 Desc:
 
-* the sample codes for database TA course. [Page Link]()
+* the sample codes for database TA course. [Page Link](https://github.com/KrisCheng/HackerProblem/tree/master/Python/8_PythonDBTutorial)
 
 ## C++
 
