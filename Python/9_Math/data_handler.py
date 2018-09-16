@@ -88,37 +88,37 @@ def __load_data_sources():
 def main_task():
     list_pucks, list_tickets, list_gates = __load_data_sources()
     # 1. 将所有需要考虑的航班记录 303*2 = 606 [id, type, date, time, plane_type, D/I, W/N]
-    list_airline = []
-    for puck in list_pucks:
-        arrive_airline = {}
-        arrive_airline["id"] = puck["到达航班"]
-        arrive_airline["type"] = "arrive"
-        arrive_airline["date"] = puck["到达日期"]
-        arrive_airline["time"] = puck["到达时刻"]
-        arrive_airline["plane_type"] = puck["飞机型号"]
-        arrive_airline["D/I"] = puck["到达类型"]
-        if arrive_airline["plane_type"] in WIDE_BODY:
-            arrive_airline["W/N"] = "W"
-        elif arrive_airline["plane_type"] in NARROW_BODY:
-            arrive_airline["W/N"] = "N"
-        else:
-            print("No Such Plane!!!")
-        list_airline.append(arrive_airline)
+    # list_airline = []
+    # for puck in list_pucks:
+    #     arrive_airline = {}
+    #     arrive_airline["id"] = puck["到达航班"]
+    #     arrive_airline["type"] = "arrive"
+    #     arrive_airline["date"] = puck["到达日期"]
+    #     arrive_airline["time"] = puck["到达时刻"]
+    #     arrive_airline["plane_type"] = puck["飞机型号"]
+    #     arrive_airline["D/I"] = puck["到达类型"]
+    #     if arrive_airline["plane_type"] in WIDE_BODY:
+    #         arrive_airline["W/N"] = "W"
+    #     elif arrive_airline["plane_type"] in NARROW_BODY:
+    #         arrive_airline["W/N"] = "N"
+    #     else:
+    #         print("No Such Plane!!!")
+    #     list_airline.append(arrive_airline)
 
-        launch_airline = {}
-        launch_airline["id"] = puck["出发航班"]
-        launch_airline["type"] = "launch"
-        launch_airline["date"] = puck["出发日期"]
-        launch_airline["time"] = puck["出发时刻"]
-        launch_airline["plane_type"] = puck["飞机型号"]
-        launch_airline["D/I"] = puck["出发类型"]
-        if launch_airline["plane_type"] in WIDE_BODY:
-            launch_airline["W/N"] = "W"
-        elif launch_airline["plane_type"] in NARROW_BODY:
-            launch_airline["W/N"] = "N"
-        else:
-            print("No Such Plane!!!")
-        list_airline.append(launch_airline)
+    #     launch_airline = {}
+    #     launch_airline["id"] = puck["出发航班"]
+    #     launch_airline["type"] = "launch"
+    #     launch_airline["date"] = puck["出发日期"]
+    #     launch_airline["time"] = puck["出发时刻"]
+    #     launch_airline["plane_type"] = puck["飞机型号"]
+    #     launch_airline["D/I"] = puck["出发类型"]
+    #     if launch_airline["plane_type"] in WIDE_BODY:
+    #         launch_airline["W/N"] = "W"
+    #     elif launch_airline["plane_type"] in NARROW_BODY:
+    #         launch_airline["W/N"] = "N"
+    #     else:
+    #         print("No Such Plane!!!")
+    #     list_airline.append(launch_airline)
     
     # 2. 优先级处理 考虑--“每架飞机转场的到达和出发两个航班必须分配在同一登机口进行，其间不能挪移别处；”
     for puck in list_pucks:
@@ -193,8 +193,7 @@ def main_task():
                     break
             if time_conflict:
                 continue
-
-            print("%s %s %s" % (puck["飞机转场记录号"], resource_period["begin_index"], resource_period["end_index"]))
+            # print("%s %s %s" % (puck["飞机转场记录号"], resource_period["begin_index"], resource_period["end_index"]))
             for i in range(resource_period["begin_index"], resource_period["end_index"]+1):
                 puck["是否分配"] = 1
                 gate["资源数组"][i] = 1
@@ -214,13 +213,15 @@ def main_task():
 
     # 目标函数
     num_satisfy_airline = 0
+    num_satisfy_airline_narrow = 0
+    num_satisfy_airline_wide = 0
+
     num_free_gate = 0
 
     gate_resource_narrow = []
     gate_resource_wide = []
     list_free_gate = []
     for gate in list_gates:
-        # print(gate)
         if(gate["机体类别"] == "N"):
             gate_resource_narrow.append(gate["资源数组"])
         if(gate["机体类别"] == "W"):
@@ -231,11 +232,30 @@ def main_task():
 
     
     list_satisfy_airline = []
+    num_all_airline = 0
+
     for puck in list_pucks:
+        if puck["优先级"] == 2:
+            num_all_airline = num_all_airline + 2
+        else:
+            num_all_airline = num_all_airline + 1
         if puck["是否分配"] == 1:
             list_satisfy_airline.append(puck)
-            # 每架飞机匹配两个航班
-            num_satisfy_airline = num_satisfy_airline + 2
+            if puck["优先级"] == 2:
+                # 每架飞机匹配两个航班
+                num_satisfy_airline = num_satisfy_airline + 2
+                if puck["机体类别"] == "N":
+                    num_satisfy_airline_narrow = num_satisfy_airline_narrow + 2
+                elif puck["机体类别"] == "W":
+                    num_satisfy_airline_wide = num_satisfy_airline_wide + 2
+
+            elif puck["优先级"] == 1 or puck["优先级"] == 3:
+                # 每架飞机匹配两个航班
+                num_satisfy_airline = num_satisfy_airline + 1
+                if puck["机体类别"] == "N":
+                    num_satisfy_airline_narrow = num_satisfy_airline_narrow + 1
+                elif puck["机体类别"] == "W":
+                    num_satisfy_airline_wide = num_satisfy_airline_wide + 1
             
     # fig = plt.figure(figsize=(20, 4))
     # ax = fig.add_subplot(221)
@@ -252,7 +272,10 @@ def main_task():
     # cbar.set_label('0-1',fontsize=12)
     # pyplot.show()
 
+    print("num_all_airline : %s " % num_all_airline)
     print("num_satisfy_airline : %s " % num_satisfy_airline)
+    print("num_satisfy_airline_narrow : %s " % num_satisfy_airline_narrow)
+    print("num_satisfy_airline_wide : %s " % num_satisfy_airline_wide)
     # for satisfy_airline in list_satisfy_airline:
     #     print(satisfy_airline)
 
