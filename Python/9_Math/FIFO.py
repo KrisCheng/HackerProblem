@@ -161,8 +161,8 @@ def main_task():
             if time_conflict:
                 continue
             # print("%s %s %s" % (puck["飞机转场记录号"], resource_period["begin_index"], resource_period["end_index"]))
+            puck["是否分配"] = 1
             for i in range(resource_period["begin_index"], resource_period["end_index"]+1):
-                puck["是否分配"] = 1
                 gate["资源数组"][i] = 1
                 puck["对应登机口"] = gate["登机口"]
             # 间隔延迟45分钟 9个break

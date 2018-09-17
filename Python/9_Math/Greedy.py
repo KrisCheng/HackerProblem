@@ -197,7 +197,6 @@ def main_task():
                     break
             if time_conflict:
                 continue
-
             # 获得一个候选解
             candidate_list.append(gate["登机口"])
         
@@ -225,7 +224,7 @@ def main_task():
             gate["是否为空"] = 1
         else:
             gate["是否为空"] = 0
-
+            
     list_satisfy_airline = []
     list_unsatisfy_airline = []
     
@@ -301,16 +300,15 @@ def main_task():
     print("num_satisfy_airline : %s " % num_satisfy_airline)
     print("num_satisfy_airline_narrow : %s " % num_satisfy_airline_narrow)
     print("num_satisfy_airline_wide : %s " % num_satisfy_airline_wide)
-    for satisfy_airline in list_satisfy_airline:
-        print(satisfy_airline)
-    for unsatisfy_airline in list_unsatisfy_airline:
-        print(unsatisfy_airline)
+    # for satisfy_airline in list_satisfy_airline:
+    #     print(satisfy_airline)
+    # for unsatisfy_airline in list_unsatisfy_airline:
+    #     print(unsatisfy_airline)
 
     print("---")
     print("num_free_gate : %s " % num_free_gate)
     print("num_free_gate_narrow : %s " % num_free_gate_narrow)
     print("num_free_gate_wide : %s " % num_free_gate_wide)
-    for free_gate in list_free_gate:
-        print(free_gate)
-
+    # for free_gate in list_free_gate:
+    #     print(free_gate)
 main_task()
