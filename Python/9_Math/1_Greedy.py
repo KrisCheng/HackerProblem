@@ -3,6 +3,7 @@ import dateutil.parser
 from openpyxl import load_workbook
 from matplotlib import pyplot
 import pylab as plt
+from collections import Counter
 
 WIDE_BODY = ["332", "333", "33E", "33H", "33L", "773"]
 NARROW_BODY = ["319", "320", "321", "323", "325", "738", "73A", "73E", "73H", "73L"]
@@ -27,6 +28,47 @@ def __time_transfer(begin_time, end_time, priority):
     dict["begin_index"] = begin_index
     dict["end_index"] = end_index
     return dict
+
+# def __fitness_function(pucks_list):
+#     num_satisfy_airline = 0
+#     for puck in pucks_list:
+#         if puck["是否分配"] == 1:
+#             if(puck["优先级"] == 2):
+#                 num_satisfy_airline = num_satisfy_airline + 2
+#             else:
+#                 num_satisfy_airline = num_satisfy_airline + 1
+#     return num_satisfy_airline
+
+def get_num_empty_gates(gates_list):
+    num_empty_gates = 0
+    for gate in gates_list:
+        if sum(gate["资源数组"]) == 0:
+            num_empty_gates = num_empty_gates + 1
+    return num_empty_gates
+
+# 贪心策略，用当前所有候选解中可以用时间最晚的作为最优解
+def __get_earliest_time(candidate_list, gates_list):
+    best_gate = ""
+    tmp_time = 99999
+    for candidate in candidate_list:
+        isFound = False
+        # 该登机口是否为空
+        isEmpty = True
+        for gate in gates_list:
+            if gate["登机口"] == candidate:
+                isFound = True
+                for i in range(0, gate["资源数组"].__len__())[::-1]:
+                    # 找到最后为1的index
+                    if gate["资源数组"][i] == 1 and tmp_time > i:
+                        isEmpty = False
+                        tmp_time = i 
+                        best_gate = gate["登机口"]
+                        break
+            if isEmpty:
+                best_gate = gate["登机口"]
+            if isFound:
+                break
+    return best_gate
 
 def __load_data_sources():
     file = "InputData.xlsx"
@@ -88,7 +130,7 @@ def __load_data_sources():
 def main_task():
     list_pucks, list_tickets, list_gates = __load_data_sources()
     
-    # 2. 优先级处理 考虑--“每架飞机转场的到达和出发两个航班必须分配在同一登机口进行，其间不能挪移别处；”
+    # 1. 优先级处理 考虑 -- “每架飞机转场的到达和出发两个航班必须分配在同一登机口进行，其间不能挪移别处；”
     for puck in list_pucks:
     # 飞机分类
     # 19号到达，20号起飞 优先级 1
@@ -110,7 +152,7 @@ def main_task():
         elif puck["飞机型号"] in NARROW_BODY:
             puck["机体类别"] = "N"
         else:
-            print("Error")
+            print("Error！！！")
 
     # 根据优先级对飞机排序
     tmp_list = []
@@ -136,17 +178,18 @@ def main_task():
         for i in range(TIME_STEPS):
             resource_time.append(0)
         gate["资源数组"] = resource_time
-
-    # 4. 为需要分配的飞机分配资源
-    # [飞机，登机口，到达日期，到达时刻，出发日期，出发时刻，到达类型，出发类型，飞机类别，达到航班，出发航班]
-    list_record = []
-
+    
+    # 贪心策略
     for puck in list_pucks:
         puck["是否分配"] = 0
+        puck["对应登机口"] = "NONE"
         resource_period = __time_transfer(puck["到达时刻"], puck["出发时刻"], puck["优先级"])
-        # 策略1  遍历， FIFO
+        puck["到达时刻"] = resource_period["begin_index"]
+        puck["出发时刻"] = resource_period["end_index"]
+
+        candidate_list = []
         for gate in list_gates: 
-            # 判断飞机型号 / 到达和出发类型是否 匹配
+            # 判断飞机型号 / 到达和出发类型 是否匹配
             if (puck["机体类别"].strip() != gate["机体类别"].strip()
              or puck["到达类型"].strip() not in gate["到达类型"]
              or puck["出发类型"].strip() not in gate["出发类型"]):
@@ -155,31 +198,47 @@ def main_task():
             time_conflict = False
             for i in range(resource_period["begin_index"], resource_period["end_index"]+1):
                 if gate["资源数组"][i] != 0:
-                    # print("时间资源已被占用！")
                     time_conflict = True
                     break
             if time_conflict:
                 continue
-            # print("%s %s %s" % (puck["飞机转场记录号"], resource_period["begin_index"], resource_period["end_index"]))
-            puck["是否分配"] = 1
+            # 满足条件，获得一个候选解
+            candidate_list.append(gate["登机口"])
+        
+        if len(candidate_list) >= 1:
+            # 找到离降落时间最近的点
+            best_gate = __get_earliest_time(candidate_list, list_gates)
             for i in range(resource_period["begin_index"], resource_period["end_index"]+1):
-                gate["资源数组"][i] = 1
-                puck["对应登机口"] = gate["登机口"]
-            # 间隔延迟45分钟 9个break
-            if (resource_period["end_index"] < TIME_STEPS - 9):
-                for i in range(1,10):
-                    gate["资源数组"][resource_period["end_index"]+i] = 1
-            else:
-                for i in range(1,10):
-                    gate["资源数组"][TIME_STEPS-i] = 1
-            # 分配完毕，下一个puck
-            if puck["是否分配"] == 1:
-                break
+                for gate in list_gates:
+                    if gate["登机口"] == best_gate:
+                        puck["是否分配"] = 1
+                        gate["资源数组"][i] = 1
+                        puck["对应登机口"] = gate["登机口"]
+                        # 间隔延迟45分钟 9个break
+                        if (resource_period["end_index"] < TIME_STEPS - 9):
+                            for i in range(1,10):
+                                gate["资源数组"][resource_period["end_index"]+i] = 1
+                        else:
+                            for i in range(resource_period["end_index"], TIME_STEPS):
+                                gate["资源数组"][i] = 1
+                        break
 
-    # 目标函数
-    num_satisfy_airline = 0
-    num_satisfy_airline_narrow = 0
-    num_satisfy_airline_wide = 0
+    # list_pucks 和 list_gates 分别表示当前的最优情况
+    for gate in list_gates:
+        if sum(gate["资源数组"]) == 0:
+            gate["是否为空"] = 1
+        else:
+            gate["是否为空"] = 0
+            
+    # 评价部分
+    list_satisfy_airplane = []
+    list_unsatisfy_airplane = []
+    
+    num_all_airplane = 0
+
+    num_satisfy_airplane = 0
+    num_satisfy_airplane_wide = 0
+    num_satisfy_airplane_narrow = 0
 
     num_free_gate = 0
     num_free_gate_narrow = 0
@@ -188,6 +247,19 @@ def main_task():
     gate_resource_narrow = []
     gate_resource_wide = []
     list_free_gate = []
+
+    for puck in list_pucks:
+        num_all_airplane = num_all_airplane + 1
+        if puck["是否分配"] == 1:
+            list_satisfy_airplane.append(puck)
+            num_satisfy_airplane = num_satisfy_airplane + 1    
+            if puck["机体类别"] == "N":
+                num_satisfy_airplane_narrow = num_satisfy_airplane_narrow + 1
+            elif puck["机体类别"] == "W":
+                num_satisfy_airplane_wide = num_satisfy_airplane_wide + 1
+        if puck["是否分配"] == 0:
+            list_unsatisfy_airplane.append(puck)
+
     for gate in list_gates:
         if(gate["机体类别"] == "N"):
             gate_resource_narrow.append(gate["资源数组"])
@@ -200,69 +272,36 @@ def main_task():
             if(gate["机体类别"] == "W"):
                 num_free_gate_wide = num_free_gate_wide + 1            
             list_free_gate.append(gate)
-
-    
-    list_satisfy_airline = []
-    list_unsatisfy_airline = []
-    num_all_airline = 0
-
-    for puck in list_pucks:
-
-        if puck["优先级"] == 2:
-            num_all_airline = num_all_airline + 2
-        else:
-            num_all_airline = num_all_airline + 1
-
-        if puck["是否分配"] == 1:
-            list_satisfy_airline.append(puck)
-            if puck["优先级"] == 2:
-                # 每架飞机匹配两个航班
-                num_satisfy_airline = num_satisfy_airline + 2
-                if puck["机体类别"] == "N":
-                    num_satisfy_airline_narrow = num_satisfy_airline_narrow + 2
-                elif puck["机体类别"] == "W":
-                    num_satisfy_airline_wide = num_satisfy_airline_wide + 2
-
-            elif puck["优先级"] == 1 or puck["优先级"] == 3:
-                # 每架飞机匹配一个航班
-                num_satisfy_airline = num_satisfy_airline + 1
-                if puck["机体类别"] == "N":
-                    num_satisfy_airline_narrow = num_satisfy_airline_narrow + 1
-                elif puck["机体类别"] == "W":
-                    num_satisfy_airline_wide = num_satisfy_airline_wide + 1
-        else:
-            list_unsatisfy_airline.append(puck)
-
-        # 5. 优化算法
-
             
-    fig = plt.figure(figsize=(20, 10))
+    fig = plt.figure(figsize=(16, 8))
     ax = fig.add_subplot(221)
     plt.imshow(gate_resource_wide)
-    # ax.text(0, 1, 'Wide-body', fontsize=12, color='r')
+    # ax.text(1, 2, 'Wide', fontsize=12, color='r')
     cbar = plt.colorbar(plt.imshow(gate_resource_wide), orientation='horizontal')
-    cbar.set_label('Wide-body (1-Full / 0-Free)',fontsize=12)
+    cbar.set_label(' Wide 0-1',fontsize=12)
 
     ax = fig.add_subplot(222)
     plt.imshow(gate_resource_narrow)
-    # ax.text(0, 2, 'Narrow-body', fontsize=12, color='r')
     cbar = plt.colorbar(plt.imshow(gate_resource_narrow), orientation='horizontal')
-    cbar.set_label('Narrow-body (1-Full / 0-Free)',fontsize=12)
+    cbar.set_label('Narrow 0-1',fontsize=12)
     pyplot.show()
 
-    print("num_all_airline : %s " % num_all_airline)
-    print("num_satisfy_airline : %s " % num_satisfy_airline)
-    print("num_satisfy_airline_narrow : %s " % num_satisfy_airline_narrow)
-    print("num_satisfy_airline_wide : %s " % num_satisfy_airline_wide)
-    # for satisfy_airline in list_satisfy_airline:
-    #     print(satisfy_airline)
-    # for unsatisfy_airline in list_unsatisfy_airline:
-    #     print("%s %s %s" % (unsatisfy_airline["到达类型"],unsatisfy_airline["出发类型"],unsatisfy_airline["机体类别"]))
+    for puck in list_pucks:
+        if (puck["是否分配"] == 1):
+            print(puck)
+    for puck in list_pucks:
+        if (puck["是否分配"] == 0):
+            print(puck)
+    for gate in list_gates:
+        print(gate)
+    print("num_all_airplane : %s " % num_all_airplane)
+    print("num_satisfy_airplane : %s " % num_satisfy_airplane)
+    print("num_satisfy_airplane_narrow : %s " % num_satisfy_airplane_narrow)
+    print("num_satisfy_airplane_wide : %s " % num_satisfy_airplane_wide)
     print("---")
     print("num_free_gate : %s " % num_free_gate)
     print("num_free_gate_narrow : %s " % num_free_gate_narrow)
     print("num_free_gate_wide : %s " % num_free_gate_wide)
-    # for free_gate in list_free_gate:
-    #     print(free_gate)
 
-main_task()
+if __name__ == '__main__':
+    main_task()

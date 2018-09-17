@@ -1,4 +1,3 @@
-import random
-
-for i in range(100):
-    print(random.randint(0,9))
+num = [5,9,10,23,89]
+for i in range(0, num.__len__())[::-1]:
+    print(i)

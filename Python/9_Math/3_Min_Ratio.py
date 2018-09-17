@@ -162,7 +162,7 @@ def __all_time_calculator(ticket, list_gates):
         # print(ticket["到达日期"])
         ratio = all_time/(5*(ticket["出发时刻"]-ticket["到达时刻"]+288))
     else:
-        ratio = all_time/(5*(ticket["出发时刻"]-ticket["到达时刻"]+288))
+        ratio = all_time/(5*(ticket["出发时刻"]-ticket["到达时刻"]))
     ticket["换乘紧张度"] = ratio
 
 def __load_data_sources():
