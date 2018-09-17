@@ -11,6 +11,43 @@ NARROW_BODY = ["319", "320", "321", "323", "325", "738", "73A", "73E", "73H", "7
 # 5分钟为时间步长
 TIME_STEPS = 288 # 60/5 * 12
 
+WALK_DISTANCE = {
+    "TN-TN":10,
+
+    "TN-TC":15, "TC-TN":15,
+    "TC-TC":10,
+
+    "TN-TS":20, "TS-TN":20,
+    "TC-TS":15, "TS-TC":15,
+    "TS-TS":10,
+    
+    "TN-SN":25, "SN-TN":25,
+    "TC-SN":20, "SN-TC":20,
+    "TS-SN":25, "SN-TS":25,
+    "SN-SN":10,
+
+    "TN-SC":20, "SC-TN":20,
+    "TC-SC":15, "SC-TC":15,
+    "TS-SC":20, "SC-TS":20,
+    "SN-SC":15, "SC-SN":15,
+    "SC-SC":10,
+
+    "TN-SS":25, "SS-TN":25,
+    "TC-SS":20, "SS-TC":20,
+    "TS-SS":25, "SS-TS":25,
+    "SN-SS":20, "SS-SN":20,
+    "SC-SS":15, "SS-SC":15,
+    "SS-SS":10,
+
+    "TN-SE":25, "SE-TN":25,
+    "TC-SE":20, "SE-TC":20,
+    "TS-SE":25, "SE-TS":25,
+    "SN-SE":20, "SE-SN":20,
+    "SC-SE":15, "SE-SC":15,
+    "SS-SE":20, "SE-SS":20,
+    "SE-SE":10
+}
+
 def __time_transfer(begin_time, end_time, priority):
     begin = begin_time.split(":")
     end = end_time.split(":")
@@ -65,53 +102,68 @@ def __get_earliest_time(candidate_list, gates_list):
                     break
     return best_gate
 
-def __processtime_calculator(ticket):
+def __all_time_calculator(ticket, list_gates):
+    all_time = 0
     process_time = 0
+
     if ("T" in ticket["到达登机口"] and "T" in ticket["出发登机口"] and "D" in ticket["出发类型"] and "D" in ticket["到达类型"]):
-        process_time = process_time + 15
+        process_time = process_time + 15 + 8 * 0
     elif ("T" in ticket["到达登机口"] and "T" in ticket["出发登机口"] and "D" in ticket["出发类型"] and "I" in ticket["到达类型"]):
-        process_time = process_time + 35
+        process_time = process_time + 35 + 8 * 0
     elif ("T" in ticket["到达登机口"] and "T" in ticket["出发登机口"] and "I" in ticket["出发类型"] and "D" in ticket["到达类型"]):
-        process_time = process_time + 35
+        process_time = process_time + 35 + 8 * 0
     elif ("T" in ticket["到达登机口"] and "T" in ticket["出发登机口"] and "I" in ticket["出发类型"] and "I" in ticket["到达类型"]):
-        process_time = process_time + 20
+        process_time = process_time + 20 + 8 * 0
 
     elif ("T" in ticket["到达登机口"] and "S" in ticket["出发登机口"] and "D" in ticket["出发类型"] and "D" in ticket["到达类型"]):
-        process_time = process_time + 20
+        process_time = process_time + 20 + 8 * 1
     elif ("T" in ticket["到达登机口"] and "S" in ticket["出发登机口"] and "D" in ticket["出发类型"] and "I" in ticket["到达类型"]):
-        process_time = process_time + 40
+        process_time = process_time + 40 + 8 * 1
     elif ("T" in ticket["到达登机口"] and "S" in ticket["出发登机口"] and "I" in ticket["出发类型"] and "D" in ticket["到达类型"]):
-        process_time = process_time + 40
+        process_time = process_time + 40 + 8 * 1
     elif ("T" in ticket["到达登机口"] and "S" in ticket["出发登机口"] and "I" in ticket["出发类型"] and "I" in ticket["到达类型"]):
-        process_time = process_time + 30
+        process_time = process_time + 30 + 8 * 1
 
     elif ("S" in ticket["到达登机口"] and "T" in ticket["出发登机口"] and "D" in ticket["出发类型"] and "D" in ticket["到达类型"]):
-        process_time = process_time + 20
+        process_time = process_time + 20 + 8 * 1
     elif ("S" in ticket["到达登机口"] and "T" in ticket["出发登机口"] and "D" in ticket["出发类型"] and "I" in ticket["到达类型"]):
-        process_time = process_time + 40
+        process_time = process_time + 40 + 8 * 1
     elif ("S" in ticket["到达登机口"] and "T" in ticket["出发登机口"] and "I" in ticket["出发类型"] and "D" in ticket["到达类型"]):
-        process_time = process_time + 40
+        process_time = process_time + 40 + 8 * 1
     elif ("S" in ticket["到达登机口"] and "T" in ticket["出发登机口"] and "I" in ticket["出发类型"] and "I" in ticket["到达类型"]):
-        process_time = process_time + 30
+        process_time = process_time + 30 + 8 * 1
 
     elif ("S" in ticket["到达登机口"] and "S" in ticket["出发登机口"] and "D" in ticket["出发类型"] and "D" in ticket["到达类型"]):
-        process_time = process_time + 15
+        process_time = process_time + 15 + 8 * 0
     elif ("S" in ticket["到达登机口"] and "S" in ticket["出发登机口"] and "D" in ticket["出发类型"] and "I" in ticket["到达类型"]):
-        process_time = process_time + 45
+        process_time = process_time + 45 + 8 * 2
     elif ("S" in ticket["到达登机口"] and "S" in ticket["出发登机口"] and "I" in ticket["出发类型"] and "D" in ticket["到达类型"]):
-        process_time = process_time + 35
+        process_time = process_time + 35 + 8 * 0
     elif ("S" in ticket["到达登机口"] and "S" in ticket["出发登机口"] and "I" in ticket["出发类型"] and "I" in ticket["到达类型"]):
-        process_time = process_time + 20
-
+        process_time = process_time + 20 + 8 * 0
+    
     else:
         print("error")
 
-    # 考虑换乘失败
-    if( 5*(ticket["出发时刻"]-ticket["到达时刻"]) < process_time):
-        process_time = 360 # 6小时
-        print("%s 换乘失败. " % ticket["旅客记录号"])
+    # 加上步行时间
+    walk_key = ''
+    arrive_position = ''
+    launch_position = ''
+    for gate in list_gates:
+        if ticket["出发登机口"] == gate["登机口"]:
+            launch_position = ticket["出发登机口"][0]+ gate["区域"][0]
+        if ticket["到达登机口"] == gate["登机口"]:
+            arrive_position = ticket["到达登机口"][0]+ gate["区域"][0]        
+    walk_key = arrive_position + "-" + launch_position
 
-    return process_time* int(ticket["乘客数"])
+    all_time = process_time + WALK_DISTANCE[walk_key]
+    if (ticket["出发日期"] > ticket["到达日期"]):
+        # print(ticket["出发日期"])
+        # print(ticket["到达日期"])
+        ratio = all_time/(5*(ticket["出发时刻"]-ticket["到达时刻"]+288))
+    else:
+        ratio = all_time/(5*(ticket["出发时刻"]-ticket["到达时刻"]+288))
+    ticket["换乘紧张度"] = ratio
 
 def __load_data_sources():
     file = "InputData.xlsx"
@@ -265,7 +317,6 @@ def main_task():
                             for i in range(resource_period["end_index"], TIME_STEPS):
                                 gate["资源数组"][i] = 1
                         break
-
     sum_process_time = 0
     
     for ticket in list_tickets:
@@ -291,12 +342,16 @@ def main_task():
         else:
             ticket["需要考虑"] = 0
 
+    all_people = 0
+    all_ratio = 0
     for ticket in list_tickets:
         if ticket["需要考虑"] == 1:
-            sum_process_time = sum_process_time + __processtime_calculator(ticket)
-    print("Total Process Time: %s " % sum_process_time)
-    
-
+            __all_time_calculator(ticket, list_gates)
+            all_people = all_people + int(ticket["乘客数"])
+            all_ratio = all_ratio + int(ticket["乘客数"]) * ticket["换乘紧张度"]
+            print(ticket)
+            
+    print("换乘紧张度 AVG. %s " %(all_ratio/all_people))
 
 if __name__ == '__main__':
     main_task()
