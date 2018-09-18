@@ -179,7 +179,6 @@ def main_task():
             resource_time.append(0)
         gate["资源数组"] = resource_time
     
-    # 贪心策略
     for puck in list_pucks:
         puck["是否分配"] = 0
         puck["对应登机口"] = "NONE"
@@ -235,6 +234,8 @@ def main_task():
     list_unsatisfy_airplane = []
     
     num_all_airplane = 0
+    num_airplane_wide = 0
+    num_airplane_narrow = 0
 
     num_satisfy_airplane = 0
     num_satisfy_airplane_wide = 0
@@ -250,6 +251,11 @@ def main_task():
 
     for puck in list_pucks:
         num_all_airplane = num_all_airplane + 1
+        if puck["机体类别"] == "W":
+            num_airplane_wide = num_airplane_wide + 1
+        elif puck["机体类别"] == "N":
+            num_airplane_narrow = num_airplane_narrow + 1
+
         if puck["是否分配"] == 1:
             list_satisfy_airplane.append(puck)
             num_satisfy_airplane = num_satisfy_airplane + 1    
@@ -286,15 +292,19 @@ def main_task():
     cbar.set_label('Narrow 0-1',fontsize=12)
     pyplot.show()
 
-    for puck in list_pucks:
-        if (puck["是否分配"] == 1):
-            print(puck)
-    for puck in list_pucks:
-        if (puck["是否分配"] == 0):
-            print(puck)
-    for gate in list_gates:
-        print(gate)
+    # for puck in list_pucks:
+    #     if (puck["是否分配"] == 1):
+    #         print(puck)
+    # for puck in list_pucks:
+    #     if (puck["是否分配"] == 0):
+    #         print(puck)
+    # for gate in list_gates:
+    #     print(gate)
+
     print("num_all_airplane : %s " % num_all_airplane)
+    print("num_airplane_wide : %s " % num_airplane_wide)
+    print("num_airplane_narrow : %s " % num_airplane_narrow)
+    print("---")
     print("num_satisfy_airplane : %s " % num_satisfy_airplane)
     print("num_satisfy_airplane_narrow : %s " % num_satisfy_airplane_narrow)
     print("num_satisfy_airplane_wide : %s " % num_satisfy_airplane_wide)

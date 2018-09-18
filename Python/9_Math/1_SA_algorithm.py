@@ -122,10 +122,119 @@ def __load_data_sources():
 
     return list_pucks, list_tickets, list_gates
 
+# "neighborhood move" --> "Interval Exchange Move"
+# • It is the generalized form of Exchange I Move and Exchange II Move and can replace these two moves.
+# • If the Exchange I Move is a “1–1 move” and the Exchange II Move is a “2–2 move”, then Interval Exchange Move is a 
+# “many-many move”, which allows moves to be more variable, and good quality solutions easier to find.
+# • The Interval Exchange Move can be applied to more diverse neighborhoods as found in realistic situations.
+# 区间更换 [0~287] -- [100~200]
+
+# Steps:
+# 1.随机选择两条功能一致的登机口 -- 是 继续
+# 2.查看其指定区间是否被阻碍 -- 否  继续
+# 3.根据id获取航道，更新list_pucks表和list_gates
+# 4.遍历没有登机口的飞机，重新排布
+
+def __reassign(list_pucks, list_gates):
+    # 遍历查找有没有新的登机口来给未分配的飞机匹配
+    for puck in list_pucks:
+        if puck["是否分配"] == 0:
+            for gate in list_gates: 
+                # 判断飞机型号 / 到达和出发类型是否 匹配
+                if (puck["机体类别"].strip() != gate["机体类别"].strip()
+                or puck["到达类型"].strip() not in gate["到达类型"]
+                or puck["出发类型"].strip() not in gate["出发类型"]):
+                    continue
+                # 判断时间上是否冲突
+                time_conflict = False
+                begin_index = puck["到达时刻"]
+                end_index = (puck["出发时刻"]) if (puck["出发时刻"]+9 < TIME_STEPS) else TIME_STEPS
+                for i in range(begin_index, end_index):
+                    if gate["资源数组"][i] != 0:
+                        time_conflict = True
+                        break
+                if time_conflict:
+                    continue
+                puck["是否分配"] = 1
+                for i in range(puck["到达时刻"], puck["出发时刻"]+1):
+                    gate["资源数组"][i] = 1
+                    puck["对应登机口"] = gate["登机口"]
+
+                # 间隔延迟45分钟，算9个break
+                if (puck["出发时刻"] < TIME_STEPS - 9):
+                    for i in range(1,10):
+                        gate["资源数组"][puck["出发时刻"]+i] = 1
+                else:
+                    for i in range(1,10):
+                        gate["资源数组"][TIME_STEPS-i] = 1
+                # 分配完毕，下一个puck
+                break
+    return list_pucks, list_gates
+
+def __free_resource(puck, list_gates):
+    for gate in list_gates:
+        if puck["对应登机口"] == gate["登机口"]:
+            begin_index = puck["到达时刻"]
+            end_index = (puck["出发时刻"]) if (puck["出发时刻"]+9 < TIME_STEPS) else TIME_STEPS
+            for i in range(begin_index, end_index):
+                gate["资源数组"][i] = 0
+    return list_gates
+
+def __takeaway(list_pucks, list_gates): # from gate to apron
+    for i in range(5):
+        t = random.randint(0, len(list_pucks)-1)
+        if list_pucks[t]["是否分配"] == 1:
+            for gate in list_gates:
+                if list_pucks[t]["对应登机口"] == gate["登机口"]:
+                    list_gates = __free_resource(list_pucks[t], list_gates)
+                    list_pucks[t]["是否分配"] = 0
+                    list_pucks[t]["对应登机口"] = "NONE"
+    return list_pucks, list_gates
+
+BEGIN_INDEX = 38
+END_INDEX = 169
+
+def swap(list_pucks, list_gates):
+
+    # 1.策略1 -- 交换两个登机口的某段时间区间(交叉操作)
+    # tmp_gates = list_gates
+    # tmp_pucks = list_pucks
+    # t1 = random.randint(0, len(tmp_gates)-1)
+    # t2 = random.randint(0, len(tmp_gates)-1)
+    # isValid = False
+
+    # if (tmp_gates[t1]["出发类型"] == tmp_gates[t2]["出发类型"]
+    # and tmp_gates[t1]["到达类型"] == tmp_gates[t2]["到达类型"]
+    # and tmp_gates[t1]["机体类别"] == tmp_gates[t2]["机体类别"]
+    # and not(tmp_gates[t1]["资源数组"][BEGIN_INDEX-1] == 1 and tmp_gates[t1]["资源数组"][BEGIN_INDEX] == 1)
+    # and not(tmp_gates[t2]["资源数组"][BEGIN_INDEX-1] == 1 and tmp_gates[t2]["资源数组"][BEGIN_INDEX] == 1)):
+    #     isValid = True
+    #     for puck in tmp_pucks:
+    #         if((puck["对应登机口"] == tmp_gates[t1]["登机口"])
+    #         and(BEGIN_INDEX <= puck["出发时刻"] <= END_INDEX)
+    #         and(BEGIN_INDEX <= puck["到达时刻"] <= END_INDEX)):
+    #             puck["对应登机口"] = tmp_gates[t2]["登机口"]
+    #         if((puck["对应登机口"] == tmp_gates[t2]["登机口"])
+    #         and(BEGIN_INDEX <= puck["出发时刻"] <= END_INDEX)
+    #         and(BEGIN_INDEX <= puck["到达时刻"] <= END_INDEX)):
+    #             puck["对应登机口"] = tmp_gates[t1]["登机口"]
+    #     for k in range(BEGIN_INDEX, END_INDEX):
+    #         tmp_gates[t1]["资源数组"][k], tmp_gates[t2]["资源数组"][k] = list_gates[t2]["资源数组"][k], list_gates[t1]["资源数组"][k] 
+    
+    # if isValid:
+    #     list_gates = tmp_gates
+    #     list_pucks = tmp_pucks
+    #     list_pucks, list_gates = __reassign(list_pucks, list_gates)
+
+    # 2.策略2 -- 随机取出一架（多架）已安置飞机与临时停机位飞机互换，然后再重新洗牌
+    list_pucks, list_gates = __takeaway(list_pucks, list_gates)
+    list_pucks, list_gates = __reassign(list_pucks, list_gates)
+    return list_pucks, list_gates
+
 def main_task():
     list_pucks, list_tickets, list_gates = __load_data_sources()
     
-    # 2. 优先级处理 考虑--“每架飞机转场的到达和出发两个航班必须分配在同一登机口进行，其间不能挪移别处；”
+    # 1. 优先级处理 考虑--“每架飞机转场的到达和出发两个航班必须分配在同一登机口进行，其间不能挪移别处；”
     for puck in list_pucks:
     # 飞机分类
     # 19号到达，20号起飞 优先级 1
@@ -181,55 +290,41 @@ def main_task():
         puck["到达时刻"] = resource_period["begin_index"]
         puck["出发时刻"] = resource_period["end_index"]
 
-        # candidate_list = []
-        # for gate in list_gates: 
-        #     # 判断飞机型号 / 到达和出发类型是否 匹配
-        #     if (puck["机体类别"].strip() != gate["机体类别"].strip()
-        #      or puck["到达类型"].strip() not in gate["到达类型"]
-        #      or puck["出发类型"].strip() not in gate["出发类型"]):
-        #         continue
-        #     # 判断时间上是否冲突
-        #     time_conflict = False
-        #     for i in range(resource_period["begin_index"], resource_period["end_index"]+1):
-        #         if gate["资源数组"][i] != 0:
-        #             time_conflict = True
-        #             break
-        #     if time_conflict:
-        #         continue
-        #     # 获得一个候选解
-        #     candidate_list.append(gate["登机口"])
+        candidate_list = []
+        for gate in list_gates: 
+            # 判断飞机型号 / 到达和出发类型是否 匹配
+            if (puck["机体类别"].strip() != gate["机体类别"].strip()
+             or puck["到达类型"].strip() not in gate["到达类型"]
+             or puck["出发类型"].strip() not in gate["出发类型"]):
+                continue
+            # 判断时间上是否冲突
+            time_conflict = False
+            for i in range(resource_period["begin_index"], resource_period["end_index"]+1):
+                if gate["资源数组"][i] != 0:
+                    time_conflict = True
+                    break
+            if time_conflict:
+                continue
+            # 获得一个候选解
+            candidate_list.append(gate["登机口"])
 
-        #     puck["是否分配"] = 1
-        #     for i in range(resource_period["begin_index"], resource_period["end_index"]+1):
-        #         gate["资源数组"][i] = 1
-        #         puck["对应登机口"] = gate["登机口"]
-        #     # 间隔延迟45分钟 9个break
-        #     if (resource_period["end_index"] < TIME_STEPS - 9):
-        #         for i in range(1,10):
-        #             gate["资源数组"][resource_period["end_index"]+i] = 1
-        #     else:
-        #         for i in range(1,10):
-        #             gate["资源数组"][TIME_STEPS-i] = 1
-        #     # 分配完毕，下一个puck
-        #     break
-        # if len(candidate_list) >= 1:
-        #     # 找到离降落时间最近的点
-        #     best_gate = __get_earliest_time(candidate_list, list_gates)
-        #     for i in range(resource_period["begin_index"], resource_period["end_index"]+1):
-        #         for gate in list_gates:
-        #             if gate["登机口"] == best_gate:
-        #                 puck["是否分配"] = 1
-        #                 gate["资源数组"][i] = 1
-        #                 puck["对应登机口"] = gate["登机口"]
-        #                 # 间隔延迟45分钟 9个break
-        #                 if (resource_period["end_index"] < TIME_STEPS - 9):
-        #                     for i in range(1,10):
-        #                         gate["资源数组"][resource_period["end_index"]+i] = 1
-        #                 else:
-        #                     for i in range(resource_period["end_index"], TIME_STEPS):
-        #                         gate["资源数组"][i] = 1
-        #                 break
-
+        if len(candidate_list) >= 1:
+            # 找到离降落时间最近的点
+            best_gate = __get_earliest_time(candidate_list, list_gates)
+            for i in range(resource_period["begin_index"], resource_period["end_index"]+1):
+                for gate in list_gates:
+                    if gate["登机口"] == best_gate:
+                        puck["是否分配"] = 1
+                        gate["资源数组"][i] = 1
+                        puck["对应登机口"] = gate["登机口"]
+                        # 间隔延迟45分钟 9个break
+                        if (resource_period["end_index"] < TIME_STEPS - 9):
+                            for i in range(1,10):
+                                gate["资源数组"][resource_period["end_index"]+i] = 1
+                        else:
+                            for i in range(resource_period["end_index"], TIME_STEPS):
+                                gate["资源数组"][i] = 1
+                        break
         # 删除不必要的信息
         puck.pop("上线机场")
         puck.pop("下线机场")
@@ -246,97 +341,21 @@ def main_task():
         else:
             gate["是否为空"] = 0
 
-    # "neighborhood move" --> "Interval Exchange Move"
-    # • It is the generalized form of Exchange I Move and Exchange II Move and can replace these two moves.
-    # • If the Exchange I Move is a “1–1 move” and the Exchange II Move is a “2–2 move”, then Interval Exchange Move is a 
-    # “many-many move”, which allows moves to be more variable, and good quality solutions easier to find.
-    # • The Interval Exchange Move can be applied to more diverse neighborhoods as found in realistic situations.
-    # 区间更换 [0~287] -- [100~200]
-
-    # Steps:
-    # 1.随机选择两条功能一致的登机口 -- 否 continue
-    # 2.查看其100~200间是否被阻碍 -- 是 continue
-    # 3.根据id获取航道，更新list_pucks表和list_gates
-    # 4.遍历没有登机口的飞机，重新排布
-
-    BEGIN_INDEX = 100
-    END_INDEX = 200
-
     print(__fitness_function(list_pucks))
     print(get_num_empty_gates(list_gates))
 
     best = __fitness_function(list_pucks)
-    
-    for i in range(100000):
-        # 交换多条航道
-        canExchange = False
-        tmp_gates = list_gates
-        tmp_pucks = list_pucks
-        count = 0
-        for k in range(2):
-            t1 = random.randint(0, len(tmp_gates)-1)
-            t2 = random.randint(0, len(tmp_gates)-1)
-            if (tmp_gates[t1]["出发类型"] == tmp_gates[t2]["出发类型"]
-            and tmp_gates[t1]["到达类型"] == tmp_gates[t2]["到达类型"]
-            and tmp_gates[t1]["机体类别"] == tmp_gates[t2]["机体类别"]
-            and not(tmp_gates[t1]["资源数组"][BEGIN_INDEX-1] == 1 and tmp_gates[t1]["资源数组"][BEGIN_INDEX] == 1)
-            and not(tmp_gates[t2]["资源数组"][BEGIN_INDEX-1] == 1 and tmp_gates[t2]["资源数组"][BEGIN_INDEX] == 1)):
-                count = count + 1
-                for puck in tmp_pucks:
-                    if((puck["对应登机口"] == tmp_gates[t1]["登机口"])
-                    and(BEGIN_INDEX <= puck["出发时刻"] <= END_INDEX)
-                    and(BEGIN_INDEX <= puck["到达时刻"] <= END_INDEX)):
-                        puck["对应登机口"] = tmp_gates[t2]["登机口"]
-                    if((puck["对应登机口"] == tmp_gates[t2]["登机口"])
-                    and(BEGIN_INDEX <= puck["出发时刻"] <= END_INDEX)
-                    and(BEGIN_INDEX <= puck["到达时刻"] <= END_INDEX)):
-                        puck["对应登机口"] = tmp_gates[t1]["登机口"]
-                for k in range(BEGIN_INDEX, END_INDEX):
-                    tmp_gates[t1]["资源数组"][k], tmp_gates[t2]["资源数组"][k] = list_gates[t2]["资源数组"][k], list_gates[t1]["资源数组"][k] 
-        
-        if count != 2:
-            continue
+    tmp_pucks = list_pucks
+    tmp_gates = list_gates
 
-        # 满足条件，此轮替换执行
-        list_gates = tmp_gates
-        list_pucks = tmp_pucks
-    
-        # 遍历查找有没有新的时间段来给未分配的飞机匹配
-        random.shuffle(list_pucks)
-        for puck in list_pucks:
-            for gate in list_gates: 
-                # 判断飞机型号 / 到达和出发类型是否 匹配
-                if (puck["机体类别"].strip() != gate["机体类别"].strip()
-                or puck["到达类型"].strip() not in gate["到达类型"]
-                or puck["出发类型"].strip() not in gate["出发类型"]):
-                    continue
-                # 判断时间上是否冲突
-                time_conflict = False
-                for i in range(puck["到达时刻"], puck["出发时刻"]+1):
-                    if gate["资源数组"][i] != 0:
-                        time_conflict = True
-                        break
-                if time_conflict:
-                    continue
-
-                puck["是否分配"] = 1
-                for i in range(puck["到达时刻"], puck["出发时刻"]+1):
-                    gate["资源数组"][i] = 1
-                    puck["对应登机口"] = gate["登机口"]
-                # 间隔延迟45分钟 9个break
-                if (puck["出发时刻"] < TIME_STEPS - 9):
-                    for i in range(1,10):
-                        gate["资源数组"][puck["出发时刻"]+i] = 1
-                else:
-                    for i in range(1,10):
-                        gate["资源数组"][TIME_STEPS-i] = 1
-                # 分配完毕，下一个puck
-                break
-
-        current = __fitness_function(list_pucks)
-        if current > best:
-            best = current
-            print(current)
+    for i in range(600):    
+        tmp_pucks, tmp_gates = swap(list_pucks, list_gates)
+        current_loss = __fitness_function(tmp_pucks)
+        if current_loss > best:
+            list_pucks = tmp_pucks
+            list_gates = tmp_gates
+            best = current_loss
+            print(current_loss)
     print("Best: %s" % best)
 
     # 评价部分
@@ -344,6 +363,8 @@ def main_task():
     list_unsatisfy_airplane = []
     
     num_all_airplane = 0
+    num_airplane_wide = 0
+    num_airplane_narrow = 0
 
     num_satisfy_airplane = 0
     num_satisfy_airplane_wide = 0
@@ -359,6 +380,11 @@ def main_task():
 
     for puck in list_pucks:
         num_all_airplane = num_all_airplane + 1
+        if puck["机体类别"] == "W":
+            num_airplane_wide = num_airplane_wide + 1
+        elif puck["机体类别"] == "N":
+            num_airplane_narrow = num_airplane_narrow + 1
+
         if puck["是否分配"] == 1:
             list_satisfy_airplane.append(puck)
             num_satisfy_airplane = num_satisfy_airplane + 1    
@@ -402,7 +428,11 @@ def main_task():
     #         print(puck)
     # for gate in list_gates:
     #     print(gate)
+
     print("num_all_airplane : %s " % num_all_airplane)
+    print("num_airplane_wide : %s " % num_airplane_wide)
+    print("num_airplane_narrow : %s " % num_airplane_narrow)
+    print("---")
     print("num_satisfy_airplane : %s " % num_satisfy_airplane)
     print("num_satisfy_airplane_narrow : %s " % num_satisfy_airplane_narrow)
     print("num_satisfy_airplane_wide : %s " % num_satisfy_airplane_wide)
