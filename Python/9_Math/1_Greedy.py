@@ -3,7 +3,6 @@ import dateutil.parser
 from openpyxl import load_workbook
 from matplotlib import pyplot
 import pylab as plt
-from collections import Counter
 
 WIDE_BODY = ["332", "333", "33E", "33H", "33L", "773"]
 NARROW_BODY = ["319", "320", "321", "323", "325", "738", "73A", "73E", "73H", "73L"]
@@ -23,10 +22,10 @@ def __time_transfer(begin_time, end_time, priority):
     if priority == 1:
         begin_index = 0
     elif priority == 3:
-        end_index = 287
+        end_index = 288
     dict = {}
     dict["begin_index"] = begin_index
-    dict["end_index"] = end_index
+    dict["end_index"] = end_index - 1
     return dict
 
 # def __fitness_function(pucks_list):
@@ -111,7 +110,7 @@ def __load_data_sources():
                 if isinstance(cell_value, datetime):
                     cell_value = cell_value.strftime("%Y-%m-%d")
                 dict[cell_key] = str(cell_value)
-        if not(dict["到达日期"] != "2018-01-20"):
+        if not(dict["到达日期"] != "2018-01-20" and dict["出发日期"] != "2018-01-20"):
             list_tickets.append(dict)
 
     for row in ws_gates.iter_rows(row_offset=1):
@@ -129,7 +128,10 @@ def __load_data_sources():
 
 def main_task():
     list_pucks, list_tickets, list_gates = __load_data_sources()
-    
+    # ticket_count = 0
+    # for ticket in list_tickets:
+    #     ticket_count = ticket_count + int(ticket["乘客数"])
+    # print(ticket_count)
     # 1. 优先级处理 考虑 -- “每架飞机转场的到达和出发两个航班必须分配在同一登机口进行，其间不能挪移别处；”
     for puck in list_pucks:
     # 飞机分类
@@ -244,10 +246,15 @@ def main_task():
     num_free_gate = 0
     num_free_gate_narrow = 0
     num_free_gate_wide = 0
+    num_t_gate = 0
+    t_gate_ratio = 0
+    num_s_gate = 0
+    s_gate_ratio = 0
 
     gate_resource_narrow = []
     gate_resource_wide = []
     list_free_gate = []
+    
 
     for puck in list_pucks:
         num_all_airplane = num_all_airplane + 1
@@ -267,6 +274,12 @@ def main_task():
             list_unsatisfy_airplane.append(puck)
 
     for gate in list_gates:
+        if gate["终端厅"] == "T" and sum(gate["资源数组"]) !=0:
+            num_t_gate = num_t_gate + 1
+            t_gate_ratio = t_gate_ratio + sum(gate["资源数组"])
+        if gate["终端厅"] == "S" and sum(gate["资源数组"]) !=0:
+            num_s_gate = num_s_gate + 1 
+            s_gate_ratio = s_gate_ratio + sum(gate["资源数组"])
         if(gate["机体类别"] == "N"):
             gate_resource_narrow.append(gate["资源数组"])
         if(gate["机体类别"] == "W"):
@@ -279,18 +292,17 @@ def main_task():
                 num_free_gate_wide = num_free_gate_wide + 1            
             list_free_gate.append(gate)
             
-    fig = plt.figure(figsize=(16, 8))
-    ax = fig.add_subplot(221)
-    plt.imshow(gate_resource_wide)
-    # ax.text(1, 2, 'Wide', fontsize=12, color='r')
-    cbar = plt.colorbar(plt.imshow(gate_resource_wide), orientation='horizontal')
-    cbar.set_label(' Wide 0-1',fontsize=12)
+    # fig = plt.figure(figsize=(16, 8))
+    # ax = fig.add_subplot(221)
+    # plt.imshow(gate_resource_wide)
+    # cbar = plt.colorbar(plt.imshow(gate_resource_wide), orientation='horizontal')
+    # cbar.set_label(' Wide 0-1',fontsize=12)
 
-    ax = fig.add_subplot(222)
-    plt.imshow(gate_resource_narrow)
-    cbar = plt.colorbar(plt.imshow(gate_resource_narrow), orientation='horizontal')
-    cbar.set_label('Narrow 0-1',fontsize=12)
-    pyplot.show()
+    # ax = fig.add_subplot(222)
+    # plt.imshow(gate_resource_narrow)
+    # cbar = plt.colorbar(plt.imshow(gate_resource_narrow), orientation='horizontal')
+    # cbar.set_label('Narrow 0-1',fontsize=12)
+    # pyplot.show()
 
     # for puck in list_pucks:
     #     if (puck["是否分配"] == 1):
@@ -312,6 +324,11 @@ def main_task():
     print("num_free_gate : %s " % num_free_gate)
     print("num_free_gate_narrow : %s " % num_free_gate_narrow)
     print("num_free_gate_wide : %s " % num_free_gate_wide)
+    print("t_gate : %s " % num_t_gate)
+    print("s_gate : %s " % num_s_gate)
+    print("t_gate_ratio : %s " % float(t_gate_ratio/(num_t_gate*288)))
+    print("s_gate_ratio : %s " % float(s_gate_ratio/(num_s_gate*288)))
+        
 
 if __name__ == '__main__':
     main_task()

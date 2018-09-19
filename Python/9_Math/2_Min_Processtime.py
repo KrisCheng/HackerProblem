@@ -23,10 +23,10 @@ def __time_transfer(begin_time, end_time, priority):
     if priority == 1:
         begin_index = 0
     elif priority == 3:
-        end_index = 287
+        end_index = 288
     dict = {}
     dict["begin_index"] = begin_index
-    dict["end_index"] = end_index
+    dict["end_index"] = end_index -1
     return dict
 
 def get_num_empty_gates(gates_list):
@@ -55,7 +55,8 @@ def __get_earliest_time(candidate_list, gates_list):
                     break
     return best_gate
 
-def __processtime_calculator(ticket):
+def __processtime_calculator(ticket, fail_count):
+
     process_time = 0
     if ("T" in ticket["到达登机口"] and "T" in ticket["出发登机口"] and "D" in ticket["出发类型"] and "D" in ticket["到达类型"]):
         process_time = process_time + 15
@@ -92,25 +93,25 @@ def __processtime_calculator(ticket):
         process_time = process_time + 35
     elif ("S" in ticket["到达登机口"] and "S" in ticket["出发登机口"] and "I" in ticket["出发类型"] and "I" in ticket["到达类型"]):
         process_time = process_time + 20
-
     else:
         print("error")
-
     # 考虑换乘失败
-    if(5*(ticket["出发时刻"]-ticket["到达时刻"]) < process_time):
+    if(5*(ticket["出发时刻"]-ticket["到达时刻"]) < process_time and ticket["出发日期"] == ticket["到达日期"]):
         process_time = 360 # 6小时
-        # print("%s 换乘失败. " % ticket["旅客记录号"])
-
-    return process_time* int(ticket["乘客数"])
+        fail_count = fail_count + 1
+        
+    return process_time* int(ticket["乘客数"]), fail_count
 
 def __fitness_function(list_tickets):
     count = 0
+    fail_count = 0
     sum_process_time = 0 
     for ticket in list_tickets:
         if ticket["需要考虑"] == 1:
-            sum_process_time = sum_process_time + __processtime_calculator(ticket)
+            current_process_time, fail_count = __processtime_calculator(ticket, fail_count)
+            sum_process_time = sum_process_time + current_process_time
             count = count + int(ticket["乘客数"])
-    return sum_process_time, count
+    return sum_process_time, count, fail_count
 
 def __load_data_sources():
     file = "InputData.xlsx"
@@ -189,7 +190,7 @@ def __takeaway(list_pucks, list_gates): # from gate to apron
                     list_pucks[t]["对应登机口"] = "NONE"
     return list_pucks, list_gates
 
-def __reassign(list_pucks, list_gates):
+def __reassign( list_pucks, list_gates):
     # 遍历查找有没有新的登机口来给未分配的飞机匹配
     for puck in list_pucks:
         if puck["是否分配"] == 0:
@@ -352,7 +353,7 @@ def main_task():
             ticket["需要考虑"] = 1
         else:
             ticket["需要考虑"] = 0
-    best_process_time, best_people_count =  __fitness_function(list_tickets)
+    best_process_time, best_people_count, best_fail_count  =  __fitness_function(list_tickets)
 
     best_pucks = list_pucks
     best_gates = list_gates
@@ -363,7 +364,7 @@ def main_task():
     current_tickets = list_tickets
 
     # 算法（模拟退火寻优）
-    for i in range(100):
+    for i in range(200):
         current_pucks, current_gates = __swap(current_pucks, current_gates)
         current_tickets = origin_list_tickets
 
@@ -389,7 +390,7 @@ def main_task():
             else:
                 ticket["需要考虑"] = 0
 
-        current_process_time, current_people_count =  __fitness_function(current_tickets)
+        current_process_time, current_people_count, current_fail_count=  __fitness_function(current_tickets)
         
         if(current_process_time < best_process_time):
             best_pucks = current_pucks
@@ -397,8 +398,14 @@ def main_task():
             best_tickets = current_tickets
             best_process_time = current_process_time
             best_people_count = current_people_count
+            best_fail_count = current_fail_count
             print("Total Process Time: %s " % best_process_time)
             print("Total Process People: %s " % best_people_count)
+
+    print("best process time: %s " % best_process_time)
+    print("best process people: %s " % best_people_count)
+    print("best fail count: %s " % best_fail_count)
+    
 
     # 评价部分
     list_satisfy_airplane = []
@@ -407,7 +414,7 @@ def main_task():
     num_all_airplane = 0
     num_airplane_wide = 0
     num_airplane_narrow = 0
-    
+
     num_satisfy_airplane = 0
     num_satisfy_airplane_wide = 0
     num_satisfy_airplane_narrow = 0
@@ -415,10 +422,15 @@ def main_task():
     num_free_gate = 0
     num_free_gate_narrow = 0
     num_free_gate_wide = 0
+    num_t_gate = 0
+    t_gate_ratio = 0
+    num_s_gate = 0
+    s_gate_ratio = 0
 
     gate_resource_narrow = []
     gate_resource_wide = []
     list_free_gate = []
+    
 
     for puck in best_pucks:
         num_all_airplane = num_all_airplane + 1
@@ -438,6 +450,12 @@ def main_task():
             list_unsatisfy_airplane.append(puck)
 
     for gate in best_gates:
+        if gate["终端厅"] == "T" and sum(gate["资源数组"]) !=0:
+            num_t_gate = num_t_gate + 1
+            t_gate_ratio = t_gate_ratio + sum(gate["资源数组"])
+        if gate["终端厅"] == "S" and sum(gate["资源数组"]) !=0:
+            num_s_gate = num_s_gate + 1 
+            s_gate_ratio = s_gate_ratio + sum(gate["资源数组"])
         if(gate["机体类别"] == "N"):
             gate_resource_narrow.append(gate["资源数组"])
         if(gate["机体类别"] == "W"):
@@ -462,16 +480,19 @@ def main_task():
     cbar.set_label('Narrow 0-1',fontsize=12)
     pyplot.show()
 
-    for puck in best_pucks:
+    for puck in list_pucks:
         if (puck["是否分配"] == 1):
             print(puck)
-    for puck in best_pucks:
+    for puck in list_pucks:
         if (puck["是否分配"] == 0):
             print(puck)
-    for gate in best_gates:
+    for gate in list_gates:
         print(gate)
 
     print("num_all_airplane : %s " % num_all_airplane)
+    print("num_airplane_wide : %s " % num_airplane_wide)
+    print("num_airplane_narrow : %s " % num_airplane_narrow)
+    print("---")
     print("num_satisfy_airplane : %s " % num_satisfy_airplane)
     print("num_satisfy_airplane_narrow : %s " % num_satisfy_airplane_narrow)
     print("num_satisfy_airplane_wide : %s " % num_satisfy_airplane_wide)
@@ -480,6 +501,11 @@ def main_task():
     print("num_free_gate_narrow : %s " % num_free_gate_narrow)
     print("num_free_gate_wide : %s " % num_free_gate_wide)
 
+    print("t_gate : %s " % num_t_gate)
+    print("s_gate : %s " % num_s_gate)
+    print("t_gate_ratio : %s " % float(t_gate_ratio/(num_t_gate*288)))
+    print("s_gate_ratio : %s " % float(s_gate_ratio/(num_s_gate*288)))
+        
 if __name__ == '__main__':
     main_task()
     

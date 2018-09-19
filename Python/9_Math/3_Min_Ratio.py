@@ -3,7 +3,6 @@ import dateutil.parser
 from openpyxl import load_workbook
 from matplotlib import pyplot
 import pylab as plt
-from collections import Counter
 import random
 
 WIDE_BODY = ["332", "333", "33E", "33H", "33L", "773"]
@@ -61,10 +60,10 @@ def __time_transfer(begin_time, end_time, priority):
     if priority == 1:
         begin_index = 0
     elif priority == 3:
-        end_index = 287
+        end_index = 288
     dict = {}
     dict["begin_index"] = begin_index
-    dict["end_index"] = end_index
+    dict["end_index"] = end_index -1
     return dict
 
 def get_num_empty_gates(gates_list):
@@ -152,6 +151,7 @@ def __all_time_calculator(ticket, list_gates):
     else:
         ratio = all_time/(5*(ticket["出发时刻"]-ticket["到达时刻"]))
     ticket["换乘紧张度"] = ratio
+    ticket["换乘时间"] = all_time
 
 def __fitness_function(list_tickets, list_gates):
     # 瓶颈函数
@@ -162,7 +162,7 @@ def __fitness_function(list_tickets, list_gates):
             __all_time_calculator(ticket, list_gates)
             all_people = all_people + int(ticket["乘客数"])
             all_ratio = all_ratio + int(ticket["乘客数"]) * ticket["换乘紧张度"]
-    return all_ratio/all_people
+    return all_ratio
 
 def __load_data_sources():
     file = "InputData.xlsx"
@@ -415,7 +415,7 @@ def main_task():
     current_tickets = list_tickets
 
     # 算法
-    for i in range(20):
+    for i in range(5):
         print(i)
         current_pucks, current_gates = __swap(current_pucks, current_gates)
         current_tickets = origin_list_tickets
@@ -444,19 +444,20 @@ def main_task():
                 ticket["需要考虑"] = 0
             current_avg_ratio = __fitness_function(current_tickets, current_gates)
 
-        print("换乘紧张度 AVG: %s " % (current_avg_ratio))
         if(best_avg_ratio > current_avg_ratio):
             best_pucks = current_pucks
             best_gates = current_gates
             best_tickets = list_tickets
             best_avg_ratio = current_avg_ratio            
-            print("换乘紧张度 AVG: %s " % (best_avg_ratio))
+            print("换乘紧张度: %s " % (best_avg_ratio))
 
     # 评价部分
     list_satisfy_airplane = []
     list_unsatisfy_airplane = []
     
     num_all_airplane = 0
+    num_airplane_wide = 0
+    num_airplane_narrow = 0
 
     num_satisfy_airplane = 0
     num_satisfy_airplane_wide = 0
@@ -465,13 +466,23 @@ def main_task():
     num_free_gate = 0
     num_free_gate_narrow = 0
     num_free_gate_wide = 0
+    num_t_gate = 0
+    t_gate_ratio = 0
+    num_s_gate = 0
+    s_gate_ratio = 0
 
     gate_resource_narrow = []
     gate_resource_wide = []
     list_free_gate = []
+    
 
     for puck in best_pucks:
         num_all_airplane = num_all_airplane + 1
+        if puck["机体类别"] == "W":
+            num_airplane_wide = num_airplane_wide + 1
+        elif puck["机体类别"] == "N":
+            num_airplane_narrow = num_airplane_narrow + 1
+
         if puck["是否分配"] == 1:
             list_satisfy_airplane.append(puck)
             num_satisfy_airplane = num_satisfy_airplane + 1    
@@ -483,6 +494,12 @@ def main_task():
             list_unsatisfy_airplane.append(puck)
 
     for gate in best_gates:
+        if gate["终端厅"] == "T" and sum(gate["资源数组"]) !=0:
+            num_t_gate = num_t_gate + 1
+            t_gate_ratio = t_gate_ratio + sum(gate["资源数组"])
+        if gate["终端厅"] == "S" and sum(gate["资源数组"]) !=0:
+            num_s_gate = num_s_gate + 1 
+            s_gate_ratio = s_gate_ratio + sum(gate["资源数组"])
         if(gate["机体类别"] == "N"):
             gate_resource_narrow.append(gate["资源数组"])
         if(gate["机体类别"] == "W"):
@@ -495,27 +512,72 @@ def main_task():
                 num_free_gate_wide = num_free_gate_wide + 1            
             list_free_gate.append(gate)
             
-    # fig = plt.figure(figsize=(16, 8))
-    # ax = fig.add_subplot(221)
-    # plt.imshow(gate_resource_wide)
-    # cbar = plt.colorbar(plt.imshow(gate_resource_wide), orientation='horizontal')
-    # cbar.set_label(' Wide 0-1',fontsize=12)
+    fig = plt.figure(figsize=(16, 8))
+    ax = fig.add_subplot(221)
+    plt.imshow(gate_resource_wide)
+    cbar = plt.colorbar(plt.imshow(gate_resource_wide), orientation='horizontal')
+    cbar.set_label('Wide 0-1',fontsize=12)
 
-    # ax = fig.add_subplot(222)
-    # plt.imshow(gate_resource_narrow)
-    # cbar = plt.colorbar(plt.imshow(gate_resource_narrow), orientation='horizontal')
-    # cbar.set_label('Narrow 0-1',fontsize=12)
-    # pyplot.show()
+    ax = fig.add_subplot(222)
+    plt.imshow(gate_resource_narrow)
+    cbar = plt.colorbar(plt.imshow(gate_resource_narrow), orientation='horizontal')
+    cbar.set_label('Narrow 0-1',fontsize=12)
+    pyplot.show()
 
-    # for puck in best_pucks:
-    #     if (puck["是否分配"] == 1):
-    #         print(puck)
-    # for puck in best_pucks:
-    #     if (puck["是否分配"] == 0):
-    #         print(puck)
-    # for gate in best_gates:
-    #     print(gate)
+    for puck in list_pucks:
+        if (puck["是否分配"] == 1):
+            print(puck)
+    for puck in list_pucks:
+        if (puck["是否分配"] == 0):
+            print(puck)
+    for gate in list_gates:
+        print(gate)
+    all_count = 0
+    fail_count = 0
+    ratio_dict = {
+        '10':0,
+        '20':0,
+        '30':0,
+        '40':0,
+        '50':0,
+        '60':0,
+        '70':0,
+        '80':0,
+        '90':0,
+        '100':0,
+        '110':0
+    }
+    for ticket in list_tickets:
+        if(ticket["需要考虑"] == 1):
+            all_count = all_count + int(ticket["乘客数"])
+            if 0<ticket["换乘紧张度"]<=0.1:
+                ratio_dict["10"] = ratio_dict["10"] + 1
+            if 0.1<ticket["换乘紧张度"]<=0.2:
+                ratio_dict["20"] = ratio_dict["20"] + 1
+            if 0.2<ticket["换乘紧张度"]<=0.3:
+                ratio_dict["30"] = ratio_dict["30"] + 1
+            if 0.3<ticket["换乘紧张度"]<=0.4:
+                ratio_dict["40"] = ratio_dict["40"] + 1
+            if 0.4<ticket["换乘紧张度"]<=0.5:
+                ratio_dict["50"] = ratio_dict["50"] + 1
+            if 0.5<ticket["换乘紧张度"]<=0.6:
+                ratio_dict["60"] = ratio_dict["60"] + 1
+            if 0.6<ticket["换乘紧张度"]<=0.7:
+                ratio_dict["70"] = ratio_dict["70"] + 1
+            if 0.7<ticket["换乘紧张度"]<=0.8:
+                ratio_dict["80"] = ratio_dict["80"] + 1
+            if 0.8<ticket["换乘紧张度"]<=0.9:
+                ratio_dict["90"] = ratio_dict["90"] + 1
+            if 0.9<ticket["换乘紧张度"]<= 1:
+                ratio_dict["100"] = ratio_dict["100"] + 1
+            if ticket["换乘紧张度"] > 1:
+                fail_count = fail_count + 1
+                ratio_dict["110"] = ratio_dict["110"] + 1
+
     print("num_all_airplane : %s " % num_all_airplane)
+    print("num_airplane_wide : %s " % num_airplane_wide)
+    print("num_airplane_narrow : %s " % num_airplane_narrow)
+    print("---")
     print("num_satisfy_airplane : %s " % num_satisfy_airplane)
     print("num_satisfy_airplane_narrow : %s " % num_satisfy_airplane_narrow)
     print("num_satisfy_airplane_wide : %s " % num_satisfy_airplane_wide)
@@ -523,7 +585,51 @@ def main_task():
     print("num_free_gate : %s " % num_free_gate)
     print("num_free_gate_narrow : %s " % num_free_gate_narrow)
     print("num_free_gate_wide : %s " % num_free_gate_wide)
-    
+    print("t_gate : %s " % num_t_gate)
+    print("s_gate : %s " % num_s_gate)
+    print("t_gate_ratio : %s " % float(t_gate_ratio/(num_t_gate*288)))
+    print("s_gate_ratio : %s " % float(s_gate_ratio/(num_s_gate*288)))
+    print("all count: %s " % all_count)
+    print("fail count: %s " % fail_count)
+    print("换乘紧张度: %s " % (best_avg_ratio))
+    print("紧张度比例:")
+    for key in ratio_dict.keys():
+        print(ratio_dict[key] / all_count)
+    print("---")
+
+    time_dict = {
+        '20':0,
+        '30':0,
+        '40':0,
+        '50':0,
+        '60':0,
+        '70':0,
+        '80':0
+    }
+    for ticket in list_tickets:
+        if ticket["需要考虑"] == 1:
+            if ticket["换乘时间"]<30:
+               time_dict["20"] = time_dict["20"] + 1
+            elif ticket["换乘时间"]<40:
+                time_dict["30"] = time_dict["30"] + 1
+            elif ticket["换乘时间"]<50:
+                time_dict["40"] = time_dict["40"] + 1
+            elif ticket["换乘时间"]<60:
+                time_dict["50"] = time_dict["50"] + 1
+            elif ticket["换乘时间"]<70:
+                time_dict["60"] = time_dict["60"] + 1
+            elif ticket["换乘时间"]<80:
+                time_dict["70"] = time_dict["70"] + 1
+            elif ticket["换乘时间"]<90:
+                time_dict["80"] = time_dict["80"] + 1
+            else:
+                print("error!")
+
+    print("换乘时间比例:")
+    for key in time_dict.keys():
+        print(time_dict[key] / all_count)
+    print("---")
+
 if __name__ == '__main__':
     main_task()
     
