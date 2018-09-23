@@ -57,6 +57,13 @@ Desc:
 
 * the sample codes for database TA course. [Page Link](https://github.com/KrisCheng/HackerProblem/tree/master/Python/8_PythonDBTutorial)
 
+#### 8. Math
+
+Desc:
+
+* 2018研究生数学建模大赛F题代码。
+
+
 ## C++
 
 #### 1.Conjunctive Normal Form (析合范式) Problem
