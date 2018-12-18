@@ -1,24 +1,24 @@
 # HackerProblem
 
-This repository is used to record some coding problems that I meet in my daily work and learning. 
+This repository is used to record some coding problems that I met in my daily working and learning. 
 
-*Notes:* classified by programming language (Python, Java, C++ etc), and sorted by timeline.
+*Notes:* classified by programming language (Python, Java, C++, etc), and sorted by timeline.
 
 ## Python
 
-#### 1.Probability Problem
+#### 1. Probability Problem
 
 Desc:
 
 * One of the three doors has a prize, while others has not, if you select one of them, someone opened one of the other two doors and found no prize, this time you want to change to another unopend door?
 
-#### 2.Logistic Regression
+#### 2. Logistic Regression
 
 Desc:
 
 * the first assignment of the course of Pattern Recognization. [Page Link](http://sse.tongji.edu.cn/yingshen/course/PR2017Fall/assignments/assignment1.pdf)
 
-#### 3.Cup Detection
+#### 3. Cup Detection
 
 Desc:
 
@@ -26,19 +26,19 @@ Desc:
 
 	Reference: [YOLOv2训练自己的数据集（VOC格式）](http://blog.csdn.net/ch_liu23/article/details/53558549)
 
-#### 4.Channel Exchange
+#### 4. Channel Exchange
 
 Desc:
 
 * See the [readme](https://github.com/KrisCheng/HackerProblem/tree/master/Python/4_ChannelExchange).
 
-#### 5.Clustering
+#### 5. Clustering
 
 Desc:
 
 * the third assignment of the course of Pattern Recognization. [Page Link](http://sse.tongji.edu.cn/yingshen/course/PR2017Fall/assignments/assignment3.pdf)
 
-#### 6.Excel2DB
+#### 6. Excel2DB
 
 Desc:
 
@@ -67,7 +67,7 @@ Desc:
 
 ## C++
 
-#### 1.Conjunctive Normal Form (析合范式) Problem
+#### 1. Conjunctive Normal Form (析合范式) Problem
 
 Desc:
 
@@ -77,7 +77,7 @@ Desc:
 
 ## Java
 
-#### 1.Mobile Data
+#### 1. Mobile Data Analysis
 
 Desc:
 
@@ -85,7 +85,7 @@ Desc:
 
 ## JavaScript
 
-#### 1.Todo
+#### 1. TodoList Webpage
 
 Desc：
 
