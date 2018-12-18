@@ -1,8 +1,8 @@
 # HackerProblem
 
-This repository is used to record the coding problems I meet in my daily work and life. 
+This repository is used to record some coding problems that I meet in my daily work and learning. 
 
-*Notes:* Classified by programming language, and ranked by timeline.
+*Notes:* classified by programming language (Python, Java, C++ etc), and sorted by timeline.
 
 ## Python
 
@@ -57,11 +57,12 @@ Desc:
 
 * the sample codes for database TA course. [Page Link](https://github.com/KrisCheng/HackerProblem/tree/master/Python/8_PythonDBTutorial)
 
-#### 8. Math
+#### 9. 2018研究生数学建模F题
 
 Desc:
 
 * 2018研究生数学建模大赛F题代码。
+
 
 
 ## C++
