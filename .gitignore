@@ -1,11 +1,11 @@
 ./node_modules
-/.xml
 /.iml
-Python/3_CupDetection/data/
+data/
 settings.json
-tb_call_201202_random.txt
 *.name
+*.txt
 *.iml
 *.class
 *.xml
 description.html
+*checkpoint*
