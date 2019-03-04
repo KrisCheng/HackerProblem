@@ -69,6 +69,17 @@ Desc:
 
 * My practice code of PyTorch.
 
+#### 11. Regular Expression
+
+Desc:
+
+* My practice code of Regular Expression.
+
+#### 12. 7 Sort Algorithms
+
+Desc:
+
+* 7 sort algorithms implementation.
 
 ## C++
 
