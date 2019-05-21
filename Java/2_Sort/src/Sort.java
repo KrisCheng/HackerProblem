@@ -62,7 +62,7 @@ public class Sort {
     public void HeapSort(int [] array) {
         int length = array.length - 1;
         int beginIndex = (length - 1) / 2;
-        
+
         for(int i = beginIndex; i >= 0; i--){
             maxHeapify(array, i, length);
         }

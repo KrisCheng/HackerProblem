@@ -5,6 +5,7 @@ settings.json
 *.name
 *.txt
 *.iml
+*.jar
 *.class
 *.xml
 description.html
