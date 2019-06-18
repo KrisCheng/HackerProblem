@@ -1,27 +1,18 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Scanner;
 
-/**
- * Created by Kris Peng on 10:37 2019/5/19 .
- * All right reserved.
- */
+import sun.rmi.runtime.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
-    public static int minValue(int[] arr){
-        return 0;
-    }
-
     public static void main(String[] args) {
-        Scanner scan = new Scanner(System.in);
-        String str = scan.nextLine();
-        str = str.substring(1, str.length()-1).replace(",","");
-        String[] res = str.split(" ");
-        int[] arr = new int[res.length];
-        for (int i = 0; i < res.length; i++) {
-            arr[i] = Integer.parseInt(res[i]);
+        List arrayList = new ArrayList();
+        arrayList.add("aaaa");
+        arrayList.add(100);
+
+        for(int i = 0; i< arrayList.size();i++){
+            String item = (String)arrayList.get(i);
+
         }
-        System.out.println(minValue(arr));
     }
 }
