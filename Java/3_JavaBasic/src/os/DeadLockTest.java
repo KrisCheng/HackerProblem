@@ -26,6 +26,7 @@ public class DeadLockTest implements Runnable{
                 }
             }
         }
+
         if (flag == 1) {
             synchronized (o2) {
                 try {
