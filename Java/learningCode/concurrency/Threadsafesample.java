@@ -21,7 +21,7 @@ public class Threadsafesample {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        Threadsafesample threadsafesample = new Threadsafesample();
+        final Threadsafesample threadsafesample = new Threadsafesample();
         Thread threadA = new Thread(){
             public void run(){
                 threadsafesample.nonSafeAction();
