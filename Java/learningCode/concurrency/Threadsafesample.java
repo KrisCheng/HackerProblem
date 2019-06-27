@@ -6,7 +6,7 @@
 public class Threadsafesample {
     public int sharedState;
     public void nonSafeAction(){
-//        synchronized (this) {
+        synchronized (this) {
         while(sharedState < 1000000){
             int former = sharedState++;
             int latter = sharedState;
@@ -15,7 +15,7 @@ public class Threadsafesample {
                 + latter);
             }
         }
-//        }
+        }
     }
 
     public static void main(String[] args) throws InterruptedException {

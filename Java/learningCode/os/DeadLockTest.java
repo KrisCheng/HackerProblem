@@ -8,10 +8,9 @@
 public class DeadLockTest implements Runnable{
 
     private int flag;
-    static Object o1 = new Object(), o2 = new Object();      //静态的对象，被DeadLockTest的所有实例对象所公用
+    static Object o1 = new Object(), o2 = new Object(); //静态的对象，被DeadLockTest的所有实例对象所公用
 
     public void run() {
-
         System.out.println(flag);
         if (flag == 0) {
             synchronized (o1) {
@@ -38,7 +37,7 @@ public class DeadLockTest implements Runnable{
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException{
         DeadLockTest test1 = new DeadLockTest();
         DeadLockTest test2 = new DeadLockTest();
         test1.flag = 1;
@@ -47,5 +46,7 @@ public class DeadLockTest implements Runnable{
         Thread thread2 = new Thread(test2);
         thread1.start();
         thread2.start();
+        thread1.join();
+        thread2.join();
     }
 }
