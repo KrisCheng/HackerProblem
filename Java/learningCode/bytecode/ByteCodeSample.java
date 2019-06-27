@@ -1,5 +1,3 @@
-package bytecode;
-
 /**
  * Created by Kris Peng on 16:31 2019/5/4 .
  * All right reserved.
@@ -14,5 +12,9 @@ public class ByteCodeSample {
         ++j;
         System.out.println(i);
         System.out.println(j);
+        String a = "das";
+        String b = "das";
+        System.out.println(a.hashCode());
+        System.out.println(a.hashCode());
     }
 }

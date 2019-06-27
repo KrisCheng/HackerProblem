@@ -1,4 +1,4 @@
-package designpattern.proxy.staticproxy;
+package proxy.staticproxy;
 
 /**
  * Created by Kris Peng on 09:43 2019/5/22 .

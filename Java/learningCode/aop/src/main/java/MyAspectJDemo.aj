@@ -14,17 +14,22 @@ public aspect MyAspectJDemo {
      */
     pointcut authCheck():call(* HelloWorld.sayHello(..));
 
+//    pointcut get(int x):call(* HelloWorld.sayHello(..));
     /**
      * 定义前置通知!
      */
     before():authCheck(){
-        System.out.println("sayHello方法执行前验证权限..~");
+        System.out.println("sayHello方法执行前验证权限.啊哈哈.~");
     }
 
     /**
      * 定义后置通知
      */
     after():recordLog(){
-        System.out.println("sayHello方法执行后记录日志..");
+        System.out.println("sayHello方法执行后记录日志.~");
     }
+
+//    after()returning(int x): get(){
+//        System.out.println("返回值为:" + x);
+//    }
 }

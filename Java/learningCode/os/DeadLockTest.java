@@ -1,5 +1,3 @@
-package os;
-
 /**
  * Created by Kris Peng on 21:36 2019/6/19 .
  * All right reserved.
