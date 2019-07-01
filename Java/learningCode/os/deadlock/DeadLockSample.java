@@ -1,4 +1,4 @@
-package threadpool;
+package deadlock;
 
 /**
  * Created by Kris Peng on 23:49 2019/6/27 .
