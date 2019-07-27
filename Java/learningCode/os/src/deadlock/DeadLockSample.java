@@ -13,15 +13,18 @@ public class DeadLockSample extends Thread {
         this.first = first;
         this.second = second;
     }
-    public void run(){
-        synchronized (first){
+
+    @Override
+    public void run() {
+        synchronized (first) {
             System.out.println(this.getName() + " obtained: " + first);
-            try{
+            try {
                 Thread.sleep(1000L);
-                synchronized (second){
+                synchronized (second) {
                     System.out.println(this.getName() + " obtained: " + second);
                 }
-            }catch (InterruptedException e){
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }

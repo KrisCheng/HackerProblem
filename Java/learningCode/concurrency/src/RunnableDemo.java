@@ -1,5 +1,3 @@
-package concurrency;
-
 /**
  * Created by Kris Peng on 16:59 2019/6/21 .
  * All right reserved.

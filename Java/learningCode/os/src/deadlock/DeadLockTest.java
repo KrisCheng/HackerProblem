@@ -1,5 +1,9 @@
 package deadlock;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.TreeMap;
+
 /**
  * Created by Kris Peng on 21:36 2019/6/19 .
  * All right reserved.
@@ -12,6 +16,7 @@ public class DeadLockTest implements Runnable{
     private int flag;
     static Object o1 = new Object(), o2 = new Object(); //静态的对象，被DeadLockTest的所有实例对象所公用
 
+    @Override
     public void run() {
         System.out.println(flag);
         if (flag == 0) {
@@ -22,6 +27,7 @@ public class DeadLockTest implements Runnable{
                     e.printStackTrace();
                 }
                 synchronized (o2) {
+
                 }
             }
         }
@@ -34,6 +40,7 @@ public class DeadLockTest implements Runnable{
                     e.printStackTrace();
                 }
                 synchronized (o1) {
+
                 }
             }
         }
